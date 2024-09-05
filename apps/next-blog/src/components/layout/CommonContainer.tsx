@@ -1,13 +1,3 @@
-// please create next componente template
-
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "../ui/navigation-menu";
 import NavigationBar from "./navbar/NavigationBar";
 
 interface ContainerProps {
