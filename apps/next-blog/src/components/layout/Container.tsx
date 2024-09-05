@@ -15,7 +15,6 @@ interface ContainerProps {
 }
 
 export default function Container({ children }: ContainerProps) {
-  // TODO:  Shadcn ui - NavigationMenu 래핑해서 Navigation 컴포넌트 만들기
   return (
     <>
       <NavigationBar />
