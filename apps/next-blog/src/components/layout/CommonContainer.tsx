@@ -14,7 +14,7 @@ interface ContainerProps {
   children: React.ReactNode;
 }
 
-export default function Container({ children }: ContainerProps) {
+export default function CommonContainer({ children }: ContainerProps) {
   return (
     <>
       <NavigationBar />
