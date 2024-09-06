@@ -11,6 +11,7 @@ import navlinks from "@/data/navlink";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import useNavigationHighlight from "../hooks/useNavigationHighlight";
+import Link from "next/link";
 
 interface NavigationBarProps {
   hoverActiveMode?: boolean;
@@ -28,23 +29,27 @@ export default function NavigationBar({
         <NavigationMenuList ref={navigationMenuListRef} style={{ gap: tabGap }}>
           <>
             {navlinks.map((navlink) => (
-              <NavigationMenuItem key={navlink.title}>
-                <NavigationMenuTrigger
-                  className="text-base"
-                  showArrowButton={false}
-                  onMouseOver={
-                    hoverActiveMode
-                      ? () => setHoverTabIdx(navlink.idx)
-                      : undefined
-                  }
-                >
-                  {navlink.title}
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <NavigationMenuLink href={navlink.link}>
-                    {/* {navlink.title} */}
-                  </NavigationMenuLink>
-                </NavigationMenuContent>
+              <NavigationMenuItem
+                key={navlink.title}
+                onMouseOver={
+                  hoverActiveMode
+                    ? () => setHoverTabIdx(navlink.idx)
+                    : undefined
+                }
+              >
+                <Link href={navlink.link} passHref>
+                  <NavigationMenuTrigger
+                    className="text-base"
+                    showArrowButton={false}
+                  >
+                    {navlink.title}
+                  </NavigationMenuTrigger>
+                </Link>
+
+                {/* TODO: 추후 하위 메뉴 생기면 주석 해제 */}
+                {/* <NavigationMenuContent>
+                  <NavigationMenuLink>{navlink.title}</NavigationMenuLink>
+                </NavigationMenuContent> */}
               </NavigationMenuItem>
             ))}
             {/* Current Line Tab Highlight */}
