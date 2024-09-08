@@ -26,8 +26,12 @@ export default function NavigationBar({
   return (
     <div>
       <NavigationMenu className="h-20 p-8">
-        <NavigationMenuList ref={navigationMenuListRef} style={{ gap: tabGap }}>
-          <>
+        <NavigationMenuList>
+          <div
+            className="flex"
+            style={{ gap: tabGap }}
+            ref={navigationMenuListRef}
+          >
             {navlinks.map((navlink) => (
               <NavigationMenuItem
                 key={navlink.title}
@@ -57,7 +61,7 @@ export default function NavigationBar({
               className="absolute bottom-0 left-0 bg-black h-[2px] transition-[width,left,right] duration-[0.3s,0.3s,0.3s] ease"
               style={{ ...currentBarStyle }}
             ></div>
-          </>
+          </div>
         </NavigationMenuList>
       </NavigationMenu>
     </div>

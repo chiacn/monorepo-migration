@@ -1,15 +1,13 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 
-export default function useNavigationHighlight(
-  tabGap: number,
-): {
-  navigationMenuListRef: React.RefObject<HTMLUListElement>;
+export default function useNavigationHighlight(tabGap: number): {
+  navigationMenuListRef: React.RefObject<HTMLDivElement>;
   currentBarStyle: React.CSSProperties;
   setHoverTabIdx: React.Dispatch<React.SetStateAction<number | null>>;
 } {
   const [hoverTabIdx, setHoverTabIdx] = useState<number | null>(null);
   const calcTabWidthList = useRef<number[]>([]);
-  const navigationMenuListRef = useRef<HTMLUListElement | null>(null);
+  const navigationMenuListRef = useRef<HTMLDivElement | null>(null);
 
   const currentBarStyle = useMemo<React.CSSProperties>(() => {
     const left = calcTabWidthList.current.reduce((acc, cur, curIdx) => {
@@ -19,6 +17,12 @@ export default function useNavigationHighlight(
       }
       return acc;
     }, 0);
+
+    console.log("currentBarStyle", {
+      width:
+        hoverTabIdx !== null ? `${calcTabWidthList.current[hoverTabIdx]}px` : 0,
+      left: `${left}px`,
+    });
 
     return {
       width:
