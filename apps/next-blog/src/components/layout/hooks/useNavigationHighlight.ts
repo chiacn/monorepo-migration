@@ -18,12 +18,6 @@ export default function useNavigationHighlight(tabGap: number): {
       return acc;
     }, 0);
 
-    console.log("currentBarStyle", {
-      width:
-        hoverTabIdx !== null ? `${calcTabWidthList.current[hoverTabIdx]}px` : 0,
-      left: `${left}px`,
-    });
-
     return {
       width:
         hoverTabIdx !== null ? `${calcTabWidthList.current[hoverTabIdx]}px` : 0,
