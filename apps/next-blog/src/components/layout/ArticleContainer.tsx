@@ -1,43 +1,20 @@
 import Aside from "./aside/Aside";
-import NavigationBar from "./navbar/NavigationBar";
+import getDirectoryStructure from "@/utils/postUtils";
 
 interface ArticleContainerProps {
   children: React.ReactNode;
 }
 
-export default function CommonContainer({ children }: ArticleContainerProps) {
-  const mockMenuTree = [
-    {
-      title: "JavaScript",
-      urlPath: "/javascript",
-      children: ["Introduction", "Advanced Concepts", "ES6 Features"],
-    },
-    {
-      title: "React",
-      urlPath: "/react",
-      children: ["Hooks", "State Management", "Component Patterns"],
-    },
-    {
-      title: "CSS",
-      urlPath: "/css",
-      children: ["Flexbox", "Grid", "Animations"],
-    },
-    {
-      title: "Node.js",
-      urlPath: "/node",
-      children: ["Introduction", "Express", "REST API"],
-    },
-    {
-      title: "No Children Example",
-      urlPath: "/no-children",
-      children: [],
-    },
-  ];
+export default async function CommonContainer({
+  children,
+}: ArticleContainerProps) {
+  const menuTree = getDirectoryStructure("./src/posts/articles");
+  // console.log("mdxList --- ", JSON.stringify(menuTree, null, 2));
 
   return (
     <>
       <div className="w-full flex flex-col sm:flex-row">
-        <Aside menuTree={mockMenuTree} />
+        <Aside menuTree={menuTree} />
         <div>{children}</div>
       </div>
     </>
