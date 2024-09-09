@@ -29,7 +29,7 @@ export default function getDirectoryStructure(dirPath: string): MenuTreeNode[] |
       const itemPath = path.join(dirPath, item);
       return {
         title: path.basename(itemPath),
-        urlPath: itemPath.substring(itemPath.indexOf(baseUrl)),
+        urlPath: '/blog' + itemPath.substring(itemPath.indexOf(baseUrl) + baseUrl.length), // baseUrl 이후의 경로만 반환
         children: getDirectoryStructure(itemPath)
       };
       
