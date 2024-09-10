@@ -5,8 +5,9 @@ const path = require('path');
 
 
 
+
 // 파일 및 디렉토리 구조를 탐색하여 객체로 반환하는 함수
-export default function getDirectoryStructure(dirPath: string): MenuTreeNode[] | undefined {
+export const getDirectoryStructure = (dirPath: string): MenuTreeNode[] | undefined =>  {
   const baseUrl = path.join('posts');
   /*
       구조 예시 -

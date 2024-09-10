@@ -1,5 +1,5 @@
 import Aside from "./aside/Aside";
-import getDirectoryStructure from "@/utils/postUtils";
+import { getDirectoryStructure } from "@/utils/postUtils";
 
 interface ArticleContainerProps {
   children: React.ReactNode;
