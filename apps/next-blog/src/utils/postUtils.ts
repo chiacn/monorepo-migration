@@ -1,9 +1,40 @@
-import { MenuTreeNode } from "@/lib/types";
+import { ArticlesList, MenuTreeNode } from "@/lib/types";
+import { compileMDX } from "next-mdx-remote/rsc";
 
 const fs = require('fs');
 const path = require('path');
 
+export const getArticlesList = async (listPath: string): Promise<ArticlesList[]> => {
+  const directoryPath = path.join(
+    process.cwd(),
+    "src",
+    listPath,
+  );
+  const fileList = fs.readdirSync(directoryPath); // 해당 경로의 하위 파일 배열로 반환
 
+  console.log('listPath', listPath);
+
+  return await Promise.all(fileList.map(async (fileName: string) => {
+    const mdxPath = path.join(directoryPath, fileName);
+    const markdownSource = fs.readFileSync(mdxPath, "utf-8");
+
+    const { frontmatter } = await compileMDX({
+      source: markdownSource,
+      options: {
+        parseFrontmatter: true,
+        mdxOptions: {
+          remarkPlugins: [],
+          rehypePlugins: []
+        }
+      }
+    });
+    return {
+      title: fileName.replace('.mdx', ''),
+      urlPath: listPath + '/' + fileName,
+      frontmatter: frontmatter,
+    };
+  }));
+}
 
 
 // 파일 및 디렉토리 구조를 탐색하여 객체로 반환하는 함수

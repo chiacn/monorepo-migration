@@ -5,7 +5,8 @@ export type MenuTreeNode = {
     isDirectory?: boolean;
 }
 
-export type articlesList = {
+export type ArticlesList = {
     title: string;
     urlPath: string;
+    frontmatter: object;
 }
