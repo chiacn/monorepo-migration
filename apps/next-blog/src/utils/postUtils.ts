@@ -12,9 +12,7 @@ export const getArticlesList = async (listPath: string): Promise<ArticlesList[]>
   );
   const fileList = fs.readdirSync(directoryPath); // 해당 경로의 하위 파일 배열로 반환
 
-  console.log('listPath', listPath);
-
-  return await Promise.all(fileList.map(async (fileName: string) => {
+  const mdxList = await Promise.all(fileList.map(async (fileName: string) => {
     const mdxPath = path.join(directoryPath, fileName);
     const markdownSource = fs.readFileSync(mdxPath, "utf-8");
 
@@ -34,6 +32,8 @@ export const getArticlesList = async (listPath: string): Promise<ArticlesList[]>
       frontmatter: frontmatter,
     };
   }));
+  return mdxList
+    .sort((a: any, b: any) =>  Number(new Date(b.frontmatter.date)) - Number(new Date(a.frontmatter.date)));
 }
 
 
