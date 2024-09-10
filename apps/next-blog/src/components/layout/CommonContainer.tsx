@@ -13,11 +13,11 @@ export default function CommonContainer({ children }: ContainerProps) {
     return null; // Note: 모바일 여부 판단이 안 되었을 시 표시 x
   }
   return (
-    <>
+    <div className="sm:px-[400px] sm:min-w-max">
       {isMobile ? <MobileNavigationBar /> : <NavigationBar />}
-      <div className="flex min-h-screen flex-col items-center justify-between">
+      <div className="flex min-h-screen flex-col items-center justify-between sm:mt-4">
         {children}
       </div>
-    </>
+    </div>
   );
 }
