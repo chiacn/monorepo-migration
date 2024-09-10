@@ -30,7 +30,7 @@ export const getArticlesList = async (listPath: string): Promise<ArticlesList[]>
       });
       return {
         title: fileName.replace('.mdx', ''),
-        urlPath: listPath + '/' + fileName,
+        urlPath: '/blog/' + listPath + '/' + fileName,
         frontmatter: frontmatter,
       };
     }));
@@ -44,11 +44,15 @@ export const getArticlesList = async (listPath: string): Promise<ArticlesList[]>
 
 export const getArticle = async (articlePath: string) => {
   try {
+    console.log('articlePath --- ', articlePath);
     const targetPath = path.join(
       process.cwd(),
-      "src",
       articlePath,
     );
+
+    console.log('targetPath --- ', targetPath);
+
+    
     const markdownSource = fs.readFileSync(targetPath, "utf-8");
     
 
