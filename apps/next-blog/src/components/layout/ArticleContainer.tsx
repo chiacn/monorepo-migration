@@ -15,7 +15,7 @@ export default async function CommonContainer({
     <>
       <div className="w-full flex flex-col sm:flex-row">
         <Aside menuTree={menuTree} />
-        <div>{children}</div>
+        <div className="w-full">{children}</div>
       </div>
     </>
   );

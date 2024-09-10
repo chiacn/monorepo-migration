@@ -19,14 +19,14 @@ export default function ArticlesList({
   return (
     <div className="w-full p-4">
       {/* 제목 영역 */}
-      <div className="flex flex-col sm:flex-row sm:w-3/5 p-4 text-lg sm:text-xl">
-        <div className="ml-0 sm:ml-8">{menuTitle}</div>
+      <div className="flex font-bold sm:flex-row sm:w-3/5 p-4 text-lg sm:text-3xl">
+        <div className="ml-0">{menuTitle}</div>
       </div>
 
-      {/* 설명 영역 */}
-      <div className="flex w-full sm:w-4/5 h-full border border-black p-4 mt-4">
-        {/* {description} */}
-      </div>
+      {/* 설명 영역 TODO: 추후 추가 */}
+      {/* <div className="flex w-full sm:w-4/5 h-full p-4 mt-4">
+        
+      </div> */}
 
       {/* 리스트 영역 */}
       <ul className="mt-4">
@@ -36,6 +36,7 @@ export default function ArticlesList({
               key={article.urlPath}
               urlPath={article.urlPath}
               title={article.title}
+              frontmatter={article.frontmatter}
             />
           ))}
       </ul>

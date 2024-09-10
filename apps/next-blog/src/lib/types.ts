@@ -8,5 +8,12 @@ export type MenuTreeNode = {
 export type ArticlesList = {
     title: string;
     urlPath: string;
-    frontmatter: object;
+    frontmatter: Frontmatter;
+}
+
+export type Frontmatter = {
+    title: string;
+    date: string;
+    description?: string;
+    thumbnail?: string;
 }

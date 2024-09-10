@@ -15,11 +15,8 @@ export default async function Page({ params }: PageProps) {
   const listPath = path.join("posts", ...slug);
   const articlesList = await getArticlesList(listPath);
 
-  console.log("page.tsx --- getArticlesList :: ", articlesList);
-
   const menuTitle = slug[slug.length - 1];
   const isPost = menuTitle.includes(".mdx");
-
   return (
     // <>{isPost ? <ArticleLayout /> : <ArticlesList menuTitle={menuTitle} />}</>
     <ArticlesList menuTitle={menuTitle} articlesList={articlesList} />
