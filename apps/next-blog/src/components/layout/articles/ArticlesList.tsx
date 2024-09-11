@@ -1,20 +1,17 @@
-import { ArticlesList as ArticlesListType } from "@/lib/types";
-
-import Link from "next/link";
 import ArticlesListItem from "./ArticlesListItem";
+import { getArticlesList } from "@/utils/postUtils";
 
 interface ArticlesListProps {
-  articlesList: ArticlesListType[];
   menuTitle: string;
+  listPath: string;
 }
 
 // 서버 컴포넌트
-export default function ArticlesList({
-  articlesList,
+export default async function ArticlesList({
   menuTitle,
+  listPath,
 }: ArticlesListProps) {
-  // TODO: 썸네일 추가
-  // const description = getArticleListDescription(menuTitle);
+  const articlesList = await getArticlesList(listPath);
 
   return (
     <div className="w-full p-4">
