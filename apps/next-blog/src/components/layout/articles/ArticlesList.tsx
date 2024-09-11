@@ -1,5 +1,6 @@
 import ArticlesListItem from "./ArticlesListItem";
 import { getArticlesList } from "@/utils/postUtils";
+import ArticlesListItemWithTransition from "./ArticlesListItemWithTransition";
 
 interface ArticlesListProps {
   menuTitle: string;
@@ -26,17 +27,19 @@ export default async function ArticlesList({
       </div> */}
 
       {/* 리스트 영역 */}
-      <ul className="mt-4">
-        {articlesList.length > 0 &&
-          articlesList.map((article) => (
-            <ArticlesListItem
-              key={article.urlPath}
-              urlPath={article.urlPath}
-              title={article.title}
-              frontmatter={article.frontmatter}
-            />
-          ))}
-      </ul>
+      <ArticlesListItemWithTransition>
+        <ul className="mt-4">
+          {articlesList.length > 0 &&
+            articlesList.map((article) => (
+              <ArticlesListItem
+                key={article.urlPath}
+                urlPath={article.urlPath}
+                title={article.title}
+                frontmatter={article.frontmatter}
+              />
+            ))}
+        </ul>
+      </ArticlesListItemWithTransition>
     </div>
   );
 }

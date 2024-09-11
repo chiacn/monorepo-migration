@@ -9,11 +9,10 @@ export default function ArticlesListItem({
 }: ArticlesList) {
   const getThumbnailSrc = (fileName?: string) => {
     // Note: Next에서 이미지 가져올 때 public 경로 제외하고 가져와야함.
-    console.log(`/public/thumbnail/${fileName}`);
-
     if (!fileName) return "/thumbnail/default.png";
     return `/thumbnail/${fileName}`;
   };
+
   return (
     <li key={urlPath + title} className="mb-4">
       <Link href={urlPath}>
