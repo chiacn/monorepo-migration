@@ -15,7 +15,7 @@ export default function CommonContainer({ children }: ContainerProps) {
   return (
     <div className="sm:px-[400px] sm:min-w-max">
       {isMobile ? <MobileNavigationBar /> : <NavigationBar />}
-      <div className="flex min-h-screen flex-col items-center justify-between sm:mt-4">
+      <div className="flex min-h-screen flex-col items-center justify-between sm:mt-12">
         {children}
       </div>
     </div>
