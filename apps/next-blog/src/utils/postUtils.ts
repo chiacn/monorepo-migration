@@ -50,13 +50,13 @@ export const getArticle = async (articlePath: string) => {
     console.log('articlePath --- ', articlePath);
     const targetPath = path.join(
       process.cwd(),
+      "src",
+      "posts",
       articlePath,
     );
 
-    console.log('targetPath --- ', targetPath);
-
-    
-    const markdownSource = fs.readFileSync(targetPath, "utf-8");
+    const decodedPath = decodeURIComponent(targetPath);
+    const markdownSource = fs.readFileSync(decodedPath, "utf-8");
     
 
     // Note: 외부에서 MDX에 접근해서 content, frontmatter 추출하는 경우 compileMDX 사용
