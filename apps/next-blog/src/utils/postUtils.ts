@@ -6,11 +6,14 @@ const path = require('path');
 
 export const getArticlesList = async (listPath: string): Promise<ArticlesList[]> => {
   try {
+    console.log('getArticlesList --- listPath --- ', listPath);
     const directoryPath = path.join(
       process.cwd(),
       "src",
+      "posts",
       listPath,
     );
+
     const fileList = fs.readdirSync(directoryPath); // 해당 경로의 하위 파일 배열로 반환
 
     const mdxList = await Promise.all(fileList.map(async (fileName: string) => {

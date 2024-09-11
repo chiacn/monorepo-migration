@@ -9,7 +9,7 @@ interface PageProps {
 export default function Page({ params }: PageProps) {
   const { slug } = params;
 
-  const listPath = path.join("posts", ...slug);
+  const listPath = path.join(...slug);
   const menuTitle = slug[slug.length - 1];
   const isPost = menuTitle.includes(".mdx");
 
