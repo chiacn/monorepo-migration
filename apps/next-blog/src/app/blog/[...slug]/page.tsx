@@ -2,6 +2,16 @@ import path from "path";
 import ArticlesList from "@/components/layout/articles/ArticlesList";
 import ArticleLayout from "@/components/layout/articles/ArticleLayout";
 
+/* Note: dynamicParams - 
+    true : generateStaticParams에 없는 경로라도 필요에 따라 생성
+    false : 포함 안 된 경로 404
+ */
+export const dynamicParams = true;
+export async function generateStaticParams() {
+  // return [{ slug: ["articles", "Argorithm", "Test"] }];
+  return [];
+}
+
 interface PageProps {
   params: { slug: string[] };
 }
