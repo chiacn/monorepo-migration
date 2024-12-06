@@ -1,3 +1,4 @@
+import DiagramContainer from "@/components/flow/DiagramContainer";
 import { getArticle } from "@/utils/postUtils";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import path from "path";
@@ -13,6 +14,7 @@ export default async function ArticleLayout({
   // const title = articlePath.split(path.sep).pop();
   // const decodedTitle = decodeURIComponent(title as string).replace(".mdx", "");
 
+  console.log("markdownSource:", markdownSource);
   return (
     <div className="prose">
       {/* <h1>{decodedTitle}</h1> */}
@@ -22,10 +24,12 @@ export default async function ArticleLayout({
           parseFrontmatter: true,
           mdxOptions: {
             remarkPlugins: [],
+
             rehypePlugins: [],
           },
         }}
       />
+      <DiagramContainer />
     </div>
   );
 }
