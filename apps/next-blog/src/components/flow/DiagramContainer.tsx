@@ -264,7 +264,7 @@ export default function DiagramContainer() {
 
   return (
     // Note: <></>로 구성 시 DOM 요소를 생성하지 않아서 flow에 문제가 발생할 수 있음.
-    <div>
+    <div className="flex flex-col items-center">
       <div
         className="flex flex-col justify-center items-center w-[80vw]"
         style={{
