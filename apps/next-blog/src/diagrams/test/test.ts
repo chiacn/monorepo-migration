@@ -144,7 +144,7 @@ const test = {
       },
     ],
   },
-  logicalProgression: {
+  logical_progression: {
     title: "문자열 압축 알고리즘의 논리적 진행",
     steps: [
       {

@@ -73,32 +73,12 @@ export default function DiagramContainerForText({
 
   const [isLoading, setIsLoading] = useState(false);
 
-  // const getCopyPrompt = async (input: string) => {
-  //   try {
-  //     const copied = await getPromptByInputText(input);
-  //     await navigator.clipboard.writeText(copied || "");
-  //     toast({
-  //       variant: "info",
-  //       description: "Copied!",
-  //     });
-  //   } catch (error: any) {
-  //     toast({
-  //       variant: error.variant ? error.variant : "destructive",
-  //       description: error?.message,
-  //     });
-  //   }
-  // };
-
-  // function fixJSON(jsonString: string) {
-  //   return jsonString.replace(/"step":\s*([\d.]+)/g, '"step": "$1"');
-  // }
-
   const injectPrompt = () => {
-    console.log("structures", structures);
-
+    const initInquiryType = "tree";
+    setInquiryType(initInquiryType); // 처음에는 tree 설정.
     setSubmittedText(displayText);
     setStructure({
-      ...assignDiagramIds(structures["example"]), // 처음에는 example로 설정.
+      ...assignDiagramIds(structures[initInquiryType]), // 처음에는 tree 설정.
     });
     setIsOpenSubmittedText(true);
   };
@@ -107,151 +87,26 @@ export default function DiagramContainerForText({
     injectPrompt();
   }, []);
 
-  // const submitPrompt = async (
-  //   json: string | null = null,
-  //   tempQuestion: string | null = null,
-  // ) => {
-  //   try {
-  //     let response;
-  //     setIsLoading(true);
-  //     if (json === null) {
-  //       response = (await getAnswerFromModel(question)) as any; // TODO: any - 추후 변경
-  //     } else {
-  //       response = json;
-  //     }
-  //     const match = response.match(/{[\s\S]*}/);
-  //     let jsonString = match ? match[0] : "{}";
-  //     const fixedJSONString = fixJSON(jsonString);
-
-  //     const validation = validateJsonFormat(fixedJSONString);
-  //     if (!validation.result) throw new Error(validation.message);
-
-  //     resetData();
-
-  //     const parsedJson = JSON.parse(fixedJSONString);
-
-  //     setStructure({ ...assignDiagramIds(parsedJson) });
-  //     if (json && tempQuestion) {
-  //       setSubmittedText(tempQuestion);
-  //     } else {
-  //       setSubmittedText(question);
-  //     }
-  //     setIsOpenSubmittedText(true);
-  //     // Note: setState - 비동기적으로 업데이트되고, 다음 렌더링 사이클에 상태 업데이트를 적용되므로
-  //     // structure를 사용하지 않고 assignDiagramIds(json) 그대로 사용.
-  //     setSpreadSteps({ ...assignDiagramIds(parsedJson) });
-
-  //     return {
-  //       result: true,
-  //       message: "Success!",
-  //     };
-  //   } catch (error: any) {
-  //     resetData();
-  //     toast({
-  //       variant: error.variant ? error.variant : "destructive",
-  //       description: error?.message,
-  //     });
-  //     console.error("Failed to parse JSON:", error);
-
-  //     return {
-  //       // PromptButtomDialog용
-  //       result: false,
-  //       message: error.message,
-  //     };
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
+  // const resetData = () => {
+  //   setStructure(null);
+  //   setSubmittedText("");
+  //   setIsOpenSubmittedText(false);
+  //   resetHighlight();
+  //   resetDataStructure();
   // };
-
-  // const validateJsonFormat = (str: string) => {
-  //   try {
-  //     checkValidation();
-  //     parsingStr();
-  //     checkHasValidKey(str);
-  //     return {
-  //       result: true,
-  //       message: "Success!",
-  //     };
-  //   } catch (e: any) {
-  //     return {
-  //       result: false,
-  //       message: e.message,
-  //     };
-  //   }
-
-  //   function parsingStr() {
-  //     try {
-  //       JSON.parse(str.trim());
-  //       return {
-  //         result: true,
-  //         message: "Success!",
-  //       }; // 파싱에 성공하면 유효한 JSON
-  //     } catch (e: any) {
-  //       console.error("error :: ", e);
-  //       throw {
-  //         result: false,
-  //         message: "Invalid JSON format.",
-  //       }; // 파싱 중 에러 발생 시 유효하지 않음
-  //     }
-  //   }
-  //   function checkHasValidKey(str: string) {
-  //     const requiredKeysMap: any = {
-  //       example: ["target", "example", "steps"],
-  //       tree: ["content"],
-  //       logical_progression: ["steps"],
-  //     };
-
-  //     const json = JSON.parse(str);
-  //     const keys = Object.keys(json);
-  //     const requiredKeys = requiredKeysMap[inquiryType ?? "example"];
-
-  //     if (!requiredKeys) {
-  //       throw {
-  //         result: false,
-  //         message: "Invalid inquiry type. Please try again.",
-  //       };
-  //     }
-
-  //     const missingKey = requiredKeys.find(
-  //       (key: string) => !keys.includes(key),
-  //     );
-  //     if (missingKey) {
-  //       throw {
-  //         result: false,
-  //         message: `A required key is missing in the JSON: ${missingKey}. Please try again.`,
-  //       };
-  //     }
-
-  //     return {
-  //       result: true,
-  //       message: "Success!",
-  //     };
-  //   }
-  // };
-
-  // const checkValidation = () => {
-  //   if (!inquiryType)
-  //     throw { result: false, message: "Please select inquiry type." };
-  //   return { result: true, message: "Success" };
-  // };
-
-  const resetData = () => {
-    setStructure(null);
-    setSubmittedText("");
-    setIsOpenSubmittedText(false);
-    resetHighlight();
-    resetDataStructure();
-  };
 
   const [contentWidth, setContentWidth] = useState(0);
   const contentWrapperRef = useRef<any>(null); // 최상위 depth=1의 width만 추적할 ref
 
-  const changeInquiryType = (type: string) => {
-    setStructure(null);
-    setSubmittedText("");
-    setIsOpenSubmittedText(false);
+  type InquiryType = "example" | "tree" | "logical_progression" | string;
+  const changeInquiryType = (type: InquiryType) => {
+    setStructure({
+      ...assignDiagramIds(structures[type] || null), // 처음에는 tree 설정.
+    });
+    // // setSubmittedText("");
+    // // setIsOpenSubmittedText(false);
     resetHighlight();
-    resetDataStructure();
+    // // resetDataStructure();
     setInquiryType(type);
   };
   useEffect(() => {

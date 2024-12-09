@@ -22,6 +22,7 @@ export type Structures = {
   tree: TreeType;
   example: ExampleType;
   logicalProgression: LogicalProgressionType;
+  [key: string]: any;
 };
 
 type TreeType = {
