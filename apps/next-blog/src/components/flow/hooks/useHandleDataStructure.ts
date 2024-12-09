@@ -1,3 +1,4 @@
+import { DiagramItem } from "@/lib/types";
 import { useEffect, useState } from "react";
 
 interface HandleDataStructureProps {
@@ -63,7 +64,6 @@ export default function useHandleDataStructure({
       }
       return node;
     }
-
     const diagramId = `${depth}-${node.step || "root"}`;
     node.diagramId = diagramId;
 
