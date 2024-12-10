@@ -1,7 +1,9 @@
+"use client";
 import { MutableRefObject, useEffect, useState } from "react";
 import useStepProgress from "./hooks/useStepProgress";
 import StepProgressContainer from "./StepProgressContainer";
 import PlayButton from "./PlayButton";
+import { DiagramItem } from "@/lib/types";
 
 interface SubmittedTextProps {
   submittedText: string;

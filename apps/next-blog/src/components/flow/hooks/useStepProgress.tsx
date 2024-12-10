@@ -2,6 +2,7 @@ import { use, useEffect, useLayoutEffect, useRef, useState } from "react";
 import StepProgressItem from "../StepProgressItem";
 import React from "react";
 import { match } from "assert";
+import { DiagramItem } from "@/lib/types";
 
 interface StepProgressProps {
   currentHighlightStatus: number;
@@ -150,9 +151,11 @@ export default function useStepProgress({
     keywords: string[];
     isSimilar?: boolean;
   }) {
+    console.log("splitPart - text", text);
+    console.log("splitPart - keywords", keywords);
     const escapedKeywords = changeApostrophe(escapeRegex(keywords[0]));
     const regex = new RegExp(`(${escapedKeywords})`, "gi");
-    const splitedRegex = text.split(regex);
+    const splitedRegex = text?.split(regex);
 
     // console.log("splitedRegex :: ", splitedRegex);
     // console.log("matchingText --- ", keywords[0]);
@@ -220,15 +223,16 @@ export default function useStepProgress({
     return result;
   }
   // 특수문자 이스케이프 처리 함수
-  function escapeRegex(string: string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  function escapeRegex(str: string) {
+    return str?.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
 
   function changeApostrophe(text: string) {
-    return text.replace(/'/g, "’");
+    return text?.replace(/'/g, "’");
   }
 
   function calculateSimilarity(str1: string, str2: string): number {
+    if (!str1 || str1.length === 0 || !str2 || str2.length === 0) return 0;
     const len1 = str1.length;
     const len2 = str2.length;
     const dp: number[][] = Array.from({ length: len1 + 1 }, () =>

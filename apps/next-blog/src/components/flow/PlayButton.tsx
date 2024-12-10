@@ -1,3 +1,6 @@
+"use client";
+import { useEffect } from "react";
+
 interface PlayButtonProps {
   isPlaying: boolean;
   setIsPlaying: (isPlaying: boolean) => void;

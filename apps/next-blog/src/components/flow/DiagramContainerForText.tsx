@@ -76,7 +76,11 @@ export default function DiagramContainerForText({
   const injectPrompt = () => {
     const initInquiryType = "tree";
     setInquiryType(initInquiryType); // 처음에는 tree 설정.
-    setSubmittedText(displayText);
+    setSubmittedText(
+      typeof displayText === "object" && "props" in displayText
+        ? (displayText as { props: { children: string } }).props.children
+        : displayText,
+    );
     setStructure({
       ...assignDiagramIds(structures[initInquiryType]), // 처음에는 tree 설정.
     });
@@ -101,15 +105,18 @@ export default function DiagramContainerForText({
 
   type InquiryType = "example" | "tree" | "logical_progression" | string;
   const changeInquiryType = (type: InquiryType) => {
-    setStructure({
-      ...assignDiagramIds(structures[type] || null), // 처음에는 tree 설정.
-    });
-    // // setSubmittedText("");
-    // // setIsOpenSubmittedText(false);
-    resetHighlight();
-    // // resetDataStructure();
     setInquiryType(type);
   };
+
+  // Note: changeInquiryType에서 바로 setSpreadSteps를 하면 inquiryType이 변경되기 전에 실행돼서 useEffect 사용으로 변경.
+  useEffect(() => {
+    setStructure({
+      ...assignDiagramIds(structures[inquiryType ?? "tree"] || null), // 처음에는 tree 설정.
+    });
+    setSpreadSteps({
+      ...assignDiagramIds(structures[inquiryType ?? "tree"] || null),
+    });
+  }, [inquiryType]);
   useEffect(() => {
     const updateContentWidth = () => {
       if (contentWrapperRef.current) {
