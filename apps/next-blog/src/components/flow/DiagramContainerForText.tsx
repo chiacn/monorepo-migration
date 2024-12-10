@@ -81,6 +81,7 @@ export default function DiagramContainerForText({
       ...assignDiagramIds(structures[initInquiryType]), // 처음에는 tree 설정.
     });
     setIsOpenSubmittedText(true);
+    setSpreadSteps({ ...assignDiagramIds(structures[initInquiryType]) });
   };
 
   useEffect(() => {
