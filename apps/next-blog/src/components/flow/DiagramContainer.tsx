@@ -264,7 +264,9 @@ export default function DiagramContainer() {
 
   return (
     // Note: <></>로 구성 시 DOM 요소를 생성하지 않아서 flow에 문제가 발생할 수 있음.
-    <div className="flex flex-col items-center">
+    <div
+      className={`flex flex-col items-center ${structure ? "h-[80vh]" : ""}`}
+    >
       <div
         className="flex flex-col justify-center items-center w-[80vw]"
         style={{
@@ -330,10 +332,12 @@ export default function DiagramContainer() {
       <div
         ref={bottomScrollRef}
         onScroll={() => syncScroll("bottom")}
-        className="scrollbar-custom w-[80vw] min-h-min flex flex-col overflow-x-auto"
+        className="scrollbar-custom w-[80vw] flex flex-col overflow-x-auto"
       >
-        {structure && renderDiagramItems(structure)}
-        {/* {testStructure && renderDiagramItems(testStructure)} */}
+        <div style={{ maxHeight: "calc(100% - 200px)" }}>
+          {structure && renderDiagramItems(structure)}
+          {/* {testStructure && renderDiagramItems(testStructure)} */}
+        </div>
       </div>
     </div>
   );
