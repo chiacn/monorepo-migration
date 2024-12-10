@@ -50,7 +50,7 @@ export default function StepProgressItem({
         top: 80,
       }}
     >
-      <div className="w-[520px] rounded-xl shadow-lg border border-gray-200 p-4 my-4 transition-transform transform hover:scale-105 hover:shadow-xl cursor-pointer bg-white">
+      <div className="w-[420px] rounded-xl shadow-lg border border-gray-200 p-4 my-4 transition-transform transform hover:scale-105 hover:shadow-xl cursor-pointer bg-white">
         <div className="text-xl font-bold text-gray-900 mb-2">
           Step {item.step}
         </div>

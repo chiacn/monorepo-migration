@@ -192,7 +192,7 @@ export default function DiagramContainerForText({
         <div className="flex w-full mt-4"></div>
       </div>
 
-      <div className="sticky top-0 z-20">
+      <div className="sticky top-0 z-20 ml-4 mr-4">
         <SubmittedText
           submittedText={submittedText}
           isOpenSubmittedText={isOpenSubmittedText}
