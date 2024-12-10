@@ -65,7 +65,7 @@ export default function StepProgressItem({
             return (
               <div key={key} className="text-sm text-gray-600 mb-2">
                 <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong>
-                <span className="ml-1 block max-h-[200px] overflow-y-scroll scrollbar-custom">
+                <span className="ml-1 block max-h-[200px]">
                   {key === "target" ? (
                     <span style={{ backgroundColor: highlightColor }}>
                       {value}

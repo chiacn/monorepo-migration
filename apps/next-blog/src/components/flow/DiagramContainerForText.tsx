@@ -73,12 +73,38 @@ export default function DiagramContainerForText({
 
   const [isLoading, setIsLoading] = useState(false);
 
+  function extractText(elements: any) {
+    return elements
+      .map((element: any) => {
+        if (element.type === "p") {
+          if (Array.isArray(element.props.children)) {
+            return element.props.children
+              .map((child: any) => {
+                if (typeof child === "string") return child.trim();
+                if (child.type === "strong") return child.props.children;
+                if (child.type === "br") return "\n"; // br 태그는 줄바꿈으로 처리
+              })
+              .join("")
+              .trim();
+          }
+          return element.props.children.trim();
+        }
+        if (element.type === "img") {
+          return `[이미지: ${element.props.src}, 크기: ${element.props.width}x${element.props.height}]`;
+        }
+        return "";
+      })
+      .filter((text: string) => text)
+      .join("\n\n");
+  }
+
   const injectPrompt = () => {
     const initInquiryType = "tree";
     setInquiryType(initInquiryType); // 처음에는 tree 설정.
     setSubmittedText(
-      typeof displayText === "object" && "props" in displayText
-        ? (displayText as { props: { children: string } }).props.children
+      typeof displayText === "object"
+        ? // ? (displayText as { props: { children: string } }).props.children
+          extractText(displayText)
         : displayText,
     );
     setStructure({
