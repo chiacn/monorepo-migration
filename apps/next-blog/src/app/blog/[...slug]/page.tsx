@@ -25,8 +25,6 @@ export default function Page({ params }: PageProps) {
   const menuTitle = slug[slug.length - 1];
   const isPost = menuTitle.includes(".mdx");
 
-  console.log("listPath --> ", listPath);
-
   return (
     <>
       {isPost ? (
