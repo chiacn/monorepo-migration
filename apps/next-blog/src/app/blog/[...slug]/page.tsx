@@ -1,6 +1,7 @@
 import path from "path";
 import ArticlesList from "@/components/layout/articles/ArticlesList";
 import ArticleLayout from "@/components/layout/articles/ArticleLayout";
+import { articlesPath } from "@/posts/path/articles";
 
 /* Note: dynamicParams - 
     true : generateStaticParams에 없는 경로라도 필요에 따라 생성
@@ -9,7 +10,8 @@ import ArticleLayout from "@/components/layout/articles/ArticleLayout";
 export const dynamicParams = true;
 export async function generateStaticParams() {
   // return [{ slug: ["articles", "Argorithm", "Test"] }];
-  return [];
+  // Note: github pages 배포에 따라, generateStaticParams로 정적 경로 지정해주어야함.
+  return [...articlesPath];
 }
 
 interface PageProps {
@@ -22,6 +24,8 @@ export default function Page({ params }: PageProps) {
   const listPath = path.join(...slug);
   const menuTitle = slug[slug.length - 1];
   const isPost = menuTitle.includes(".mdx");
+
+  console.log("listPath --> ", listPath);
 
   return (
     <>
