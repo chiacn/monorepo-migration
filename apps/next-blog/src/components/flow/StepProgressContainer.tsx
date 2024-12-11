@@ -1,3 +1,4 @@
+import { DiagramItem } from "@/lib/types";
 import StepProgressController from "./StepProgressController";
 
 interface StepProgressContainerProps {
