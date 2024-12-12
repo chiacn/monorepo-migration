@@ -21,4 +21,10 @@ export const articlesPath = [
       encodeURIComponent("Event Loop의 이해.mdx"),
     ],
   },
+  {
+    slug: ["articles", "Argorithm", "Test", "article-01.mdx"],
+  },
+  {
+    slug: ["articles", "Argorithm", "article-01.mdx"],
+  },
 ];
