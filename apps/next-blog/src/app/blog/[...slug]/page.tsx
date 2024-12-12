@@ -11,8 +11,10 @@ export const dynamicParams = true;
 export async function generateStaticParams() {
   // return [{ slug: ["articles", "Argorithm", "Test"] }];
   // Note: github pages 배포에 따라, generateStaticParams로 정적 경로 지정해주어야함.
-  console.log("page.tsx - generateStaticParams --- ", articlesPath);
-  return [...articlesPath];
+
+  return articlesPath.map((item) => ({
+    slug: item.slug.map((el) => encodeURIComponent(el)),
+  }));
 }
 
 interface PageProps {
