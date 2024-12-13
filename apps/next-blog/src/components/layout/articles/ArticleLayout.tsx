@@ -16,7 +16,7 @@ export default async function ArticleLayout({
   // const title = articlePath.split(path.sep).pop();
   // const decodedTitle = decodeURIComponent(title as string).replace(".mdx", "");
 
-  console.log("markdownSource:", markdownSource);
+  // console.log("markdownSource:", markdownSource);
 
   /*
     <ContainerForDiagram>

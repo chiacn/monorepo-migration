@@ -13,6 +13,8 @@ export default function ArticlesListItem({
     return `/thumbnail/${fileName}`;
   };
 
+  console.log("ArticlesListItem - urlPath ================= ", urlPath);
+
   return (
     <li key={urlPath + title} className="mb-4">
       <Link href={urlPath}>
