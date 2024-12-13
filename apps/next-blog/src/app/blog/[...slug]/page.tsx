@@ -18,23 +18,11 @@ export async function generateStaticParams() {
 
   /*
     * Note:
-    1. page.tsx에서 ArticlesList로 진입할 때 인코딩 된 listPath가 전달되고, 
-    2. ArticlesList에서 다시 page.tsx로 재진입할 때 이중으로 인코딩되는듯..?
-      
+    - 왜 그런진 모르겠는데 로컬 환경에서는 item.slug.map((el) => encodeURIComponent(el))으로 articles에 정의한 경로에 대해 인코딩을 해주어야 됐음.
+    - 그런데 github pages에 정적 페이지로 배포 시, generateStaticParams에서 인코딩을 해줄 필요가 없음. (오히려 인코딩 해주면 오류나는 현상.)
+      => 오히려 인코딩을 안 하고, function Page에서 slug로 받을 때도 decoding을 해줘서 mdx 파일명을 decoded name으로 맞춰주면 작동하는듯.
    */
 
-  console.log(
-    `
-    =====================================================================
-    page.tsx  ------------------ [generateStaticParams] -----------------
-    =====================================================================
-
-    `,
-    // articlesPath.map((item) => ({
-    //   slug: item.slug.map((el) => encodeURIComponent(el)),
-    // })),
-    articlesPath,
-  );
   // return articlesPath.map((item) => ({
   //   slug: item.slug.map((el) => encodeURIComponent(el)),
   // }));
@@ -47,22 +35,6 @@ interface PageProps {
 
 export default function Page({ params }: PageProps) {
   const { slug } = params;
-
-  // TODO: 여기서 slug가 이중 인코딩 되는게 문제
-  // => 여기서 그냥 path.join(...slug)를 해주면 slug가 인코딩된 상태로 들어온다??
-  // => console 찍어보면 여기서 이중으로 인코딩된 slug가 들어온다.
-
-  // * 그냥 아예 여기서 decode로 통일시킬까?
-  console.log(
-    `
-    ============================================================
-    page.tsx - function Page - [slug]---------------------------
-    ============================================================
-      
-    `,
-    slug,
-  );
-
   // const listPath = path.join(...slug);
   // const listPath = path.join(
   //   ...slug.map((el) => encodeURIComponent(decodeURIComponent(el))),
