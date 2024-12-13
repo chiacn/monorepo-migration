@@ -7,12 +7,7 @@ export const articlesPath = [
 
   // mdx -----------------------------------------------
   {
-    slug: [
-      "articles",
-      "example",
-      "JavaScript",
-      "Event%20Loop%EC%9D%98%20%EC%9D%B4%ED%95%B4.mdx",
-    ],
+    slug: ["articles", "example", "JavaScript", "Event Loop의 이해.mdx"],
   },
   {
     slug: ["articles", "example", "CS", "CORS의 이해.mdx"],
