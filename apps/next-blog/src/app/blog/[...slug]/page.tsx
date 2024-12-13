@@ -30,13 +30,15 @@ export async function generateStaticParams() {
     =====================================================================
 
     `,
-    articlesPath.map((item) => ({
-      slug: item.slug.map((el) => encodeURIComponent(el)),
-    })),
+    // articlesPath.map((item) => ({
+    //   slug: item.slug.map((el) => encodeURIComponent(el)),
+    // })),
+    articlesPath,
   );
-  return articlesPath.map((item) => ({
-    slug: item.slug.map((el) => encodeURIComponent(el)),
-  }));
+  // return articlesPath.map((item) => ({
+  //   slug: item.slug.map((el) => encodeURIComponent(el)),
+  // }));
+  return articlesPath;
 }
 
 interface PageProps {
