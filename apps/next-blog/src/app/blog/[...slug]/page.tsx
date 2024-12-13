@@ -65,11 +65,8 @@ export default function Page({ params }: PageProps) {
   // const listPath = path.join(
   //   ...slug.map((el) => encodeURIComponent(decodeURIComponent(el))),
   // );
-  const listPath = path.join(
-    ...slug.map((el) => encodeURIComponent(decodeURIComponent(el))),
-  );
-
-  // console.log("page.tsx ---- listPath ======================", listPath);
+  const listPath = path.join(...slug.map((el) => decodeURIComponent(el)));
+  console.log("page.tsx ---- listPath ======================", listPath);
   const menuTitle = slug[slug.length - 1];
   const isPost = menuTitle.includes(".mdx");
 
