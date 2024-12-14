@@ -1,15 +1,12 @@
 "use client";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import navlinks from "@/data/navlink";
-
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React from "react";
 import useNavigationHighlight from "../hooks/useNavigationHighlight";
 import Link from "next/link";
 
@@ -20,17 +17,22 @@ export default function NavigationBar({
   hoverActiveMode = true,
 }: NavigationBarProps) {
   const tabGap = 40;
-  const { navigationMenuListRef, currentBarStyle, setHoverTabIdx } =
-    useNavigationHighlight(tabGap);
+  const {
+    navigationMenuListRef,
+    currentBarStyle,
+    setHoverTabIdx,
+    setSelectedTabIdx,
+  } = useNavigationHighlight(tabGap);
 
   return (
     <div>
       <NavigationMenu className="h-20 p-8">
         <NavigationMenuList>
           <div
-            className="flex"
+            className="flex relative" // relative 추가
             style={{ gap: tabGap }}
             ref={navigationMenuListRef}
+            onMouseLeave={() => setHoverTabIdx(null)} // 마우스 떠나면 hover 해제
           >
             {navlinks.map((navlink) => (
               <NavigationMenuItem
@@ -40,6 +42,10 @@ export default function NavigationBar({
                     ? () => setHoverTabIdx(navlink.idx)
                     : undefined
                 }
+                onClick={() => {
+                  setSelectedTabIdx(navlink.idx);
+                  setHoverTabIdx(null); // 클릭 시 hover 상태 해제
+                }}
               >
                 <Link href={navlink.link} passHref>
                   <NavigationMenuTrigger
@@ -49,11 +55,6 @@ export default function NavigationBar({
                     {navlink.title}
                   </NavigationMenuTrigger>
                 </Link>
-
-                {/* TODO: 추후 하위 메뉴 생기면 주석 해제 */}
-                {/* <NavigationMenuContent>
-                  <NavigationMenuLink>{navlink.title}</NavigationMenuLink>
-                </NavigationMenuContent> */}
               </NavigationMenuItem>
             ))}
             {/* Current Line Tab Highlight */}
