@@ -25,7 +25,7 @@ export default function NavigationBar({
   } = useNavigationHighlight(tabGap);
 
   return (
-    <div>
+    <div className="flex justify-center">
       <NavigationMenu className="h-20 p-8">
         <NavigationMenuList>
           <div
