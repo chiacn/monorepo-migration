@@ -7,10 +7,11 @@ export default function ArticlesListItem({
   title,
   frontmatter,
 }: ArticlesList) {
+  const basePath = process.env.NODE_ENV === "production" ? "/next-blog" : "";
   const getThumbnailSrc = (fileName?: string) => {
     // Note: Next에서 이미지 가져올 때 public 경로 제외하고 가져와야함.
-    if (!fileName) return "/thumbnail/default.png";
-    return `/thumbnail/${fileName}`;
+    if (!fileName) return `${basePath}/thumbnail/default.png`;
+    return `${basePath}/thumbnail/${fileName}`;
   };
 
   console.log("ArticlesListItem - urlPath ================= ", urlPath);
