@@ -54,7 +54,7 @@ jobs:
           node-version: "20"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
 
-      # Github Repository Secrets를 통해 환경 변수 파일을 생성합니다. ---------------------------------
+      # Github Repository Secrets를 통해 환경 변수 파일을 생성합니다.  ---------------------------------
       - name: Generate Environment Variables File for Production
         run: |
           echo "NEXT_PUBLIC_GROQ_API_KEY2=$NEXT_PUBLIC_GROQ_API_KEY2" >> .env.local
