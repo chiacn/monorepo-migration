@@ -23,10 +23,16 @@ export async function generateStaticParams() {
       => 오히려 인코딩을 안 하고, function Page에서 slug로 받을 때도 decoding을 해줘서 mdx 파일명을 decoded name으로 맞춰주면 작동하는듯.
    */
 
+  const isProduction = process.env.NODE_ENV === "production";
+
   // return articlesPath.map((item) => ({
   //   slug: item.slug.map((el) => encodeURIComponent(el)),
   // }));
-  return articlesPath;
+  return isProduction
+    ? articlesPath
+    : articlesPath.map((item) => ({
+        slug: item.slug.map((el) => encodeURIComponent(el)),
+      }));
 }
 
 interface PageProps {
