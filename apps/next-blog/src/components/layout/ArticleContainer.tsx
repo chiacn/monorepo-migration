@@ -15,7 +15,9 @@ export default async function CommonContainer({
     <>
       <div className="w-full flex flex-col sm:flex-row">
         <Aside menuTree={menuTree} />
-        <div className="w-full sm:px-8">{children}</div>
+        <div className="w-full sm:px-8 flex flex-col items-center">
+          {children}
+        </div>
       </div>
     </>
   );

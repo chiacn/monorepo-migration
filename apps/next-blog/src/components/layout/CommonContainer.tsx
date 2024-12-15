@@ -2,6 +2,7 @@
 import NavigationBar from "./navbar/NavigationBar";
 import MobileNavigationBar from "./navbar/MobileNavigationBar";
 import useIsMobile from "./hooks/useIsMobile";
+import { useRef, useEffect, useState, useCallback } from "react";
 
 interface ContainerProps {
   children: React.ReactNode;
@@ -9,11 +10,44 @@ interface ContainerProps {
 
 export default function CommonContainer({ children }: ContainerProps) {
   const isMobile = useIsMobile({ maxWidth: 640 });
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidthClass, setContainerWidthClass] = useState<string>("");
+
+  // useCallback을 사용하여 함수 메모이제이션
+  const calculateContainerWidth = useCallback(() => {
+    if (containerRef.current) {
+      const width = containerRef.current.offsetWidth;
+      const padding = Math.floor(Math.abs(width - 900) / 2);
+      return `${padding}px`;
+      // return "sm:px-[240px]";
+    }
+    return "";
+  }, []);
+
+  useEffect(() => {
+    setContainerWidthClass(calculateContainerWidth());
+    // 리사이즈 이벤트 핸들러 추가 (옵션)
+    const handleResize = () => {
+      setContainerWidthClass(calculateContainerWidth());
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [calculateContainerWidth]);
+
   if (isMobile === null) {
-    return null; // Note: 모바일 여부 판단이 안 되었을 시 표시 x
+    return <div></div>;
   }
+
   return (
-    <div className="sm:px-[400px] sm:min-w-max">
+    <div
+      ref={containerRef}
+      className="sm:max-w-screen sm:mx-auto"
+      style={{
+        paddingLeft: containerWidthClass,
+        paddingRight: containerWidthClass,
+      }}
+    >
       {isMobile ? <MobileNavigationBar /> : <NavigationBar />}
       <div className="flex min-h-screen flex-col items-center justify-between sm:mt-12">
         {children}
