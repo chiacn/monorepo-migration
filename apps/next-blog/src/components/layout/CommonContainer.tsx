@@ -26,14 +26,17 @@ export default function CommonContainer({ children }: ContainerProps) {
   }, []);
 
   useEffect(() => {
-    setContainerWidthClass(calculateContainerWidth());
-    // 리사이즈 이벤트 핸들러 추가 (옵션)
+    if (isMobile !== null && containerRef.current) {
+      setContainerWidthClass(calculateContainerWidth());
+    }
+
     const handleResize = () => {
       setContainerWidthClass(calculateContainerWidth());
     };
+
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [calculateContainerWidth]);
+  }, [calculateContainerWidth, isMobile]);
 
   if (isMobile === null) {
     return <div></div>;
