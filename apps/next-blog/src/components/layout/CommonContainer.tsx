@@ -14,24 +14,30 @@ export default function CommonContainer({ children }: ContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidthClass, setContainerWidthClass] = useState<string>("");
 
-  // useCallback을 사용하여 함수 메모이제이션
   const calculateContainerWidth = useCallback(() => {
     if (containerRef.current) {
       const width = containerRef.current.offsetWidth;
       const padding = Math.floor(Math.abs(width - 900) / 2);
       return `${padding}px`;
-      // return "sm:px-[240px]";
     }
     return "";
   }, []);
 
   useEffect(() => {
     if (isMobile !== null && containerRef.current) {
-      setContainerWidthClass(calculateContainerWidth());
+      if (!isMobile) {
+        setContainerWidthClass(calculateContainerWidth());
+      } else {
+        setContainerWidthClass("0px"); // 모바일에서는 패딩 제거
+      }
     }
 
     const handleResize = () => {
-      setContainerWidthClass(calculateContainerWidth());
+      if (!isMobile) {
+        setContainerWidthClass(calculateContainerWidth());
+      } else {
+        setContainerWidthClass("0px");
+      }
     };
 
     window.addEventListener("resize", handleResize);
