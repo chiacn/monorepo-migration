@@ -65,7 +65,7 @@ export const workExperienceData = [
         sub_description: [
           "공급업체 주관 테스트(Supplier Test), DAT(Data Acceptance Test), UAT(User Acceptance Test) 세 번 이상의 강도높은 테스트 진행",
           "교통관리(TRA) 시스템 - DB 스키마 설계 및 비즈니스 로직 구현",
-          "",
+          "유니폼 관리(UNM) 시스템 - GMS 시스템 내 물류, 의전, 게임(경기) 등 타 시스템과 연동 및 동기화 작업, 유니폼 박스 스캐닝 등 물류 관리 기능 구현",
         ],
         techStack: "Vue2 | Java | Spring boot | MySQL",
       },
