@@ -260,11 +260,7 @@ export default function useStepProgress({
   }
 
   useEffect(() => {
-    // Note: tree일 경우 node 요소 클릭 시 highlight 되도록
-    if (currentHighlightStatus !== 0 && inquiryType === "tree") {
-      setProgressActive(true);
-      setHighlightText();
-    } else if (currentHighlightStatus === 0 || currentHighlightStatus === 1) {
+    if (currentHighlightStatus === 0 || currentHighlightStatus === 1) {
       resetProgress();
     }
   }, [currentHighlightStatus, focusSpreadedStep]);

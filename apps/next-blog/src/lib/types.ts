@@ -86,4 +86,5 @@ export type DiagramItem = {
   description: string;
   result?: { answer: any[] };
   steps?: DiagramItem[];
+  element_name: string;
 };
