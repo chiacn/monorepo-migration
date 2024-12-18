@@ -7,18 +7,24 @@ export default function AsideItem({ item }: { item: MenuTreeNode }) {
     item.children && item.children?.length > 0,
   );
 
+  const baseClassName =
+    "block cursor-pointer px-2 py-1 transition-colors duration-200";
+  const parentClassName =
+    "text-lg font-medium text-gray-700 hover:text-gray-900";
+  const childClassName = "text-base text-gray-600 hover:text-gray-900";
+
   return (
     <div key={item.title}>
       {item.children && item.children.length > 0 ? (
         <div
-          className="text-lg font-semibold text-gray-700 cursor-pointer py-2 transition duration-300 hover:text-blue-400"
+          className={`${baseClassName} ${parentClassName}`}
           onClick={() => setIsItemsOpen(!isItemsOpen)}
         >
           <span>{item.title}</span>
         </div>
       ) : (
         <Link href={item.urlPath} passHref>
-          <div className="text-lg font-semibold text-gray-700 cursor-pointer py-2 transition duration-300 hover:text-blue-400">
+          <div className={`${baseClassName} ${childClassName}`}>
             <span>{item.title}</span>
           </div>
         </Link>
