@@ -1,22 +1,22 @@
 import ArticlesListItem from "./ArticlesListItem";
-import { getArticlesList } from "@/utils/postUtils";
+import { getAllArticlesList, getArticlesList } from "@/utils/postUtils";
 import ArticlesListItemWithTransition from "./ArticlesListItemWithTransition";
 
 interface ArticlesListProps {
   menuTitle: string;
   listPath: string;
+  isAllPosts?: boolean;
 }
 
 // 서버 컴포넌트
 export default async function ArticlesList({
   menuTitle,
   listPath,
+  isAllPosts = false,
 }: ArticlesListProps) {
-  const articlesList = await getArticlesList(listPath);
-  console.log("ArticlesList ------------ listPath --- ", listPath);
-  console.log("ArticlesList - articlesList ------------------- ", articlesList);
-
-  // TODO: 여기서 디코딩해서 보내주는건 어떨까? 어차피 이 정보가 page.tsx로 전달될 거니까?
+  const articlesList = isAllPosts
+    ? await getAllArticlesList(listPath)
+    : await getArticlesList(listPath);
 
   return (
     <div className="w-full p-4">
