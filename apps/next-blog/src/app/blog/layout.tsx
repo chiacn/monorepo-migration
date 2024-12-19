@@ -1,9 +1,9 @@
-import ArticleContainer from "@/components/layout/ArticleContainer";
+import BlogContainer from "@/components/layout/BlogContainer";
 
 export default function BlogLayout({
   children, // will be a page or nested layout
 }: {
   children: React.ReactNode;
 }) {
-  return <ArticleContainer>{children}</ArticleContainer>;
+  return <BlogContainer>{children}</BlogContainer>;
 }

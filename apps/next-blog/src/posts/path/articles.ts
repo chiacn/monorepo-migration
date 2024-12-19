@@ -4,6 +4,8 @@ export const articlesPath = [
   { slug: ["articles", "example", "CS"] },
   { slug: ["articles", "example", "JavaScript"] },
   { slug: ["articles", "test"] },
+  { slug: ["blog", "회고"] },
+  { slug: ["blog", "blog", "회고"] },
 
   // mdx -----------------------------------------------
   {
@@ -18,5 +20,10 @@ export const articlesPath = [
   },
   {
     slug: ["articles", "Argorithm", "article-01.mdx"],
+  },
+
+  // blog ----------------------------
+  {
+    slug: ["blog", "회고", "Event Loop의 이해.mdx"],
   },
 ];
