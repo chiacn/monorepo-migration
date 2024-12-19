@@ -61,8 +61,8 @@ export const getAllArticlesList = async (
           filePath,
         );
 
-        // 최종 URL 경로 (예: /blog/articles/subfolder/fileName)
-        const urlPath = "/blog/" + relativePath;
+        // 최종 URL 경로 (예: /articles/subfolder/fileName)
+        const urlPath = "/" + relativePath;
 
         return {
           title: path.basename(filePath, ".mdx"),
@@ -88,7 +88,6 @@ export const getArticlesList = async (
   listPath: string,
 ): Promise<ArticlesList[]> => {
   try {
-    console.log("getArticlesList --- listPath --- ", listPath);
     const directoryPath = path.join(process.cwd(), "src", "posts", listPath);
 
     const fileList = fs.readdirSync(directoryPath); // 해당 경로의 하위 파일 배열로 반환
@@ -110,13 +109,12 @@ export const getArticlesList = async (
         });
         return {
           title: fileName.replace(".mdx", ""),
-          urlPath: "/blog/" + listPath + "/" + fileName,
+          urlPath: "/" + listPath + "/" + fileName,
           frontmatter: frontmatter,
         };
       }),
     );
 
-    console.log("postUtils - getArticlesList -- mdxList ----------- ", mdxList);
     return mdxList.sort(
       (a: any, b: any) =>
         Number(new Date(b.frontmatter.date)) -
@@ -130,8 +128,9 @@ export const getArticlesList = async (
 
 export const getArticle = async (articlePath: string) => {
   try {
-    console.log("articlePath ------------------------------- ", articlePath);
     const targetPath = path.join(process.cwd(), "src", "posts", articlePath);
+
+    console.log("getArticles ---- targetPath ---- ", targetPath);
 
     const decodedPath = decodeURIComponent(targetPath);
     const markdownSource = fs.readFileSync(decodedPath, "utf-8");
@@ -180,9 +179,9 @@ export const getDirectoryStructure = (
         const itemStat = fs.statSync(itemPath);
         return {
           title: path.basename(itemPath),
-          urlPath:
-            "/blog" +
-            itemPath.substring(itemPath.indexOf(baseUrl) + baseUrl.length), // baseUrl 이후의 경로만 반환
+          urlPath: itemPath.substring(
+            itemPath.indexOf(baseUrl) + baseUrl.length,
+          ), // baseUrl 이후의 경로만 반환
           children: itemStat.isDirectory()
             ? getDirectoryStructure(itemPath)
             : [],

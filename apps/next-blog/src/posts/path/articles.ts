@@ -1,18 +1,32 @@
 export const articlesPath = [
-  // directory -----------------------------------------
-  { slug: ["articles", "JavaScript"] },
-  { slug: ["articles", "Front"] },
-  { slug: ["articles", "CS"] },
-  { slug: ["blog", "회고"] },
+  /*
+    ex)
+    articles > JavaScript > Event Loop의 이해.mdx
 
-  // mdx -----------------------------------------------
+    [articles, JavaScript, Event Loop의 이해.mdx] --------- x
+    [JavaScript, Event Loop의 이해.mdx] ------------------- o
+  */
+
+  // directory -----------------------------------------
+
+  // Articles ------------------------------------------
+  { slug: ["JavaScript"] },
+  { slug: ["Front"] },
+  { slug: ["CS"] },
+
   {
-    slug: ["articles", "JavaScript", "Event Loop의 이해.mdx"],
+    slug: ["JavaScript", "Event Loop의 이해.mdx"],
   },
   {
-    slug: ["articles", "CS", "CORS의 이해.mdx"],
+    slug: ["CS", "CORS의 이해.mdx"],
   },
+
+  // ----------------------------------------------------
+
+  // BLOG ----------------------------------------------
+  { slug: ["회고"] },
   {
-    slug: ["blog", "회고", "Event Loop의 이해.mdx"],
+    slug: ["회고", "Event Loop의 이해.mdx"],
   },
+  // ----------------------------------------------------
 ];
