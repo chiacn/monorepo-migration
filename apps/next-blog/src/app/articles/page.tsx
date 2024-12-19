@@ -1,5 +1,8 @@
+import ArticlesList from "@/components/layout/articles/ArticlesList";
+
 import React from "react";
 
 export default function Page() {
-  return <div></div>;
+  const path = "articles";
+  return <ArticlesList menuTitle={""} listPath={path} isAllPosts={true} />;
 }
