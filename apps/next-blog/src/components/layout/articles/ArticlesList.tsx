@@ -22,7 +22,7 @@ export default async function ArticlesList({
     <div className="w-full p-4">
       {/* 제목 영역 */}
       <div className="flex font-bold sm:flex-row sm:w-3/5 p-4 text-lg sm:text-3xl">
-        <div className="ml-0">{menuTitle}</div>
+        <div className="ml-0">{decodeURIComponent(menuTitle)}</div>
       </div>
 
       {/* 설명 영역 TODO: 추후 추가 */}
