@@ -39,13 +39,14 @@ export default function useLLM({
     return { result: true, message: "Success" };
   };
 
-  const getAnswerFromModel = async (input: string, topic?: string) => {
+  const getAnswerFromModel = async (input: any, topic?: any) => {
     const params = {
       input,
       inquiryType,
       serviceInfo: {
         service: "groq",
-        model: "llama3-groq-70b-8192-tool-use-preview",
+        // model: "llama3-groq-70b-8192-tool-use-preview",
+        model: "llama-3.3-70b-versatile",
       },
     };
     try {
