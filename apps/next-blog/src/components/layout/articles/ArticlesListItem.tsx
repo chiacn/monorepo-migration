@@ -31,7 +31,7 @@ export default function ArticlesListItem({
             <div
               className="text-gray-600 mt-2"
               dangerouslySetInnerHTML={{
-                __html: frontmatter.description ?? "No description available.",
+                __html: frontmatter.description ?? "",
               }}
             />
             <p className="text-sm text-gray-400 mt-1">{frontmatter.date}</p>
