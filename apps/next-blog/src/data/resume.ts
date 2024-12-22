@@ -32,7 +32,7 @@ export const workExperienceData = [
           "SSR (Nuxt3) 도입으로 초기 로딩 속도 개선",
           "useAsyncData를 랩핑한 data fetching 모듈 개발",
         ],
-        techStack: "Vue3 | Nuxt3 | Typescript | Webview | Pinia",
+        techStack: "Vue3 | Nuxt3 | Typescript | Webview | Pinia | scss",
       },
       {
         title: "마제스티",
@@ -44,7 +44,7 @@ export const workExperienceData = [
           "이미지 업로드, 에디터, 비디오 처리, 애니메이션, carousel 등의 기능 구현",
           "다국어 지원",
         ],
-        techStack: "Vue3 | Typescript | Pinia | Lerna | nx | i18n",
+        techStack: "Vue3 | Typescript | Pinia | Lerna | nx | i18n | scss",
       },
     ],
   },
