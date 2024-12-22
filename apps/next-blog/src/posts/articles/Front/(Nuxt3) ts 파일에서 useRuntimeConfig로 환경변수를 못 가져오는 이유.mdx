@@ -39,7 +39,7 @@ Nuxt가 관리하는 영역 (component, plugin, composable 등) 안에서 동작
 - composable 생성 example
   (원래는 useAsyncData를 wrapping한 data fetching 모듈인데 회사 코드라 예시 데이터로 대체)
 
-```
+```ts
 // composables/useFetchData.ts
 export const useFetchData = (endpoint: string, options = {}) => {
   const config = useRuntimeConfig(); // 환경 변수 가져오기
@@ -63,18 +63,18 @@ export const useFetchData = (endpoint: string, options = {}) => {
 
 정의) plugins/myPlugin.ts
 
-```
+```ts
 // plugins/myPlugin.ts
 export default defineNuxtPlugin((nuxtApp) => {
-const config = useRuntimeConfig();
-// config.public에 있는 값을 nuxtApp.provide 등으로 전역에 주입 가능
-nuxtApp.provide('apiBase', config.public.apiBase);
+  const config = useRuntimeConfig();
+  // config.public에 있는 값을 nuxtApp.provide 등으로 전역에 주입 가능
+  nuxtApp.provide("apiBase", config.public.apiBase);
 });
 ```
 
 사용)
 
-```
+```ts
 // composables/useAnotherFetch.ts
 export const useAnotherFetch = () => {
   const nuxtApp = useNuxtApp();
