@@ -20,7 +20,7 @@ export const articlesPath = [
   },
   {
     slug: [
-      "Front",
+      "트러블슈팅",
       "(Nuxt3) ts 파일에서 useRuntimeConfig로 환경변수를 못 가져오는 이유.mdx",
     ],
   },
