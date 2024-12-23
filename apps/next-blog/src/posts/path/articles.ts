@@ -28,6 +28,12 @@ export const articlesPath = [
     slug: ["CS", "CORS의 이해.mdx"],
   },
 
+  {
+    slug: [
+      "트러블슈팅",
+      "(Nuxt3) SSR 환경에서 새로고침 시 getActivePinia() was called but there was no active Pinia 오류.mdx",
+    ],
+  },
   // ----------------------------------------------------
 
   // BLOG ----------------------------------------------
