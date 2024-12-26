@@ -19,6 +19,9 @@ export const articlesPath = [
     slug: ["JavaScript", "Event Loop의 이해.mdx"],
   },
   {
+    slug: ["Front", "WebView의 Service Worker 사용 방식에 대해 알아보기.mdx"],
+  },
+  {
     slug: [
       "트러블슈팅",
       "(Nuxt3) ts 파일에서 useRuntimeConfig로 환경변수를 못 가져오는 이유.mdx",
