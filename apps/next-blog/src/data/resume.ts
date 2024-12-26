@@ -23,7 +23,7 @@ export const workExperienceData = [
       },
       {
         title: `스마트스코어\n스토어`,
-        date: "23.08 - 24.12",
+        date: "23.08 - 23.12",
         description:
           "스마트스코어 체험형 매장의 o2o 서비스로, 매장 안내 및 미니게임, 시타정보를 제공하는 서비스입니다.",
         sub_description: [
