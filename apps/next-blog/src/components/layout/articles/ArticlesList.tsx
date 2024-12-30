@@ -33,7 +33,7 @@ export default async function ArticlesList({
       {/* 리스트 영역 */}
       <ArticlesListItemWithTransition>
         <ul className="mt-4">
-          {articlesList.length > 0 &&
+          {articlesList.length > 0 ? (
             articlesList.map((article) => (
               <ArticlesListItem
                 key={article.urlPath}
@@ -41,7 +41,12 @@ export default async function ArticlesList({
                 title={article.title}
                 frontmatter={article.frontmatter}
               />
-            ))}
+            ))
+          ) : (
+            <li className="text-center text-gray-500 mt-4">
+              아직 게시물이 없습니다.. (😅)
+            </li>
+          )}
         </ul>
       </ArticlesListItemWithTransition>
     </div>
