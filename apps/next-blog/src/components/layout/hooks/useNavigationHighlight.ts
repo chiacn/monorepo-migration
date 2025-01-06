@@ -1,3 +1,4 @@
+import navlinks from "@/data/navlink";
 import { useState, useEffect, useMemo, useRef } from "react";
 
 export default function useNavigationHighlight(tabGap: number): {
@@ -7,45 +8,76 @@ export default function useNavigationHighlight(tabGap: number): {
   setSelectedTabIdx: React.Dispatch<React.SetStateAction<number | null>>;
 } {
   const [hoverTabIdx, setHoverTabIdx] = useState<number | null>(null);
-  const [selectedTabIdx, setSelectedTabIdx] = useState<number | null>(0); // 초기값: 첫번째 메뉴 선택 등 상황에 맞게 설정 가능
-  const calcTabWidthList = useRef<number[]>([]);
-  const navigationMenuListRef = useRef<HTMLDivElement | null>(null);
+  const [selectedTabIdx, setSelectedTabIdx] = useState<number | null>(0);
+  const [tabWidthList, setTabWidthList] = useState<number[]>([]);
+  const navigationMenuListRef = useRef<HTMLDivElement>(null);
 
   const currentTabIdx = hoverTabIdx !== null ? hoverTabIdx : selectedTabIdx;
 
   const currentBarStyle = useMemo<React.CSSProperties>(() => {
-    const left = calcTabWidthList.current.reduce((acc, cur, curIdx) => {
-      if (currentTabIdx === null) return 0;
-      if (curIdx < currentTabIdx) {
-        return acc + cur + tabGap;
-      }
-      return acc;
-    }, 0);
+    if (tabWidthList.length === 0 || currentTabIdx === null) {
+      return { width: "0px", left: "0px" };
+    }
+
+    // 현재 탭의 왼쪽 위치를 계산
+    const left = tabWidthList
+      .slice(0, currentTabIdx)
+      .reduce((acc, width) => acc + width + tabGap, 0);
+    const width = tabWidthList[currentTabIdx] || 0;
 
     return {
-      width:
-        currentTabIdx !== null
-          ? `${calcTabWidthList.current[currentTabIdx]}px`
-          : 0,
+      width: `${width}px`,
       left: `${left}px`,
     };
-  }, [calcTabWidthList, tabGap, hoverTabIdx, selectedTabIdx]);
+  }, [tabWidthList, tabGap, currentTabIdx]); // 의존성에 tabWidthList 추가
 
   const calcTabWidth = (): number[] => {
     if (!navigationMenuListRef.current) return [];
-    return [...navigationMenuListRef.current.children].map((item) => {
-      return (item as HTMLElement).getBoundingClientRect().width;
+    return Array.from(navigationMenuListRef.current.children).map((item) => {
+      const element = item as HTMLElement;
+      const style = getComputedStyle(element);
+      const marginRight = parseFloat(style.marginRight) || 0;
+      return element.getBoundingClientRect().width + marginRight;
     });
   };
 
   const init = () => {
     setTimeout(() => {
-      calcTabWidthList.current = calcTabWidth();
-    }, 500);
+      const widths = calcTabWidth();
+      setTabWidthList(widths);
+    }, 200);
+  };
+
+  const initializeTabFromURL = () => {
+    const path = window.location.pathname;
+    const lastPart = path.substring(path.lastIndexOf("/") + 1);
+
+    const tabIndex = navlinks.findIndex(
+      (navlink) => navlink.link === `/${lastPart}`,
+    );
+
+    if (tabIndex !== -1) {
+      setSelectedTabIdx(tabIndex);
+    } else {
+      setSelectedTabIdx(0); // 기본값
+    }
   };
 
   useEffect(() => {
+    initializeTabFromURL();
     init();
+  }, []);
+
+  // 창 크기 변경 시 재측정
+  useEffect(() => {
+    const handleResize = () => {
+      const widths = calcTabWidth();
+      setTabWidthList(widths);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return {
