@@ -18,6 +18,9 @@ export default async function ArticlesList({
     ? await getAllArticlesList(listPath)
     : await getArticlesList(listPath);
 
+  console.log("menuTitle ------------------ ", menuTitle);
+  console.log("listPath ------------------ ", listPath);
+
   return (
     <div className="w-full p-4">
       {/* 제목 영역 */}
@@ -44,7 +47,9 @@ export default async function ArticlesList({
             ))
           ) : (
             <li className="text-center text-gray-500 mt-4">
-              아직 게시물이 없습니다.. (😅)
+              {listPath === "blog"
+                ? "회고 및 일상 글 업로드 예정"
+                : "아직 게시물이 없습니다.. (😅)"}
             </li>
           )}
         </ul>
