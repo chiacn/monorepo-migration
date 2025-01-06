@@ -15,7 +15,7 @@ export const projectData = [
     description:
       "공부 및 트러블 슈팅 내용을 정리하기 위한 블로그 (현재 페이지) \n 이전 블로그 (2020 - 2022) - https://dadado.tistory.com/",
     sub_description: [],
-    techStack: "React | Typescript | Next | tailwind",
+    techStack: "React | Typescript | Next | tailwind | next-mdx-remote",
   },
   {
     title: "Save your time",
@@ -26,6 +26,6 @@ export const projectData = [
       "React의 기본적인 상태관리를 이해하기 위한 useEffect, useState, useRef, useReducer 등 기본 Hook 사용",
       "React 환경에서 setInterval 사용의 문제점을 다룬 Article 내용 실습\n( https://overreacted.io/making-setinterval-declarative-with-react-hooks/ )",
     ],
-    techStack: "React, TypeScript",
+    techStack: "React | TypeScript",
   },
 ];
