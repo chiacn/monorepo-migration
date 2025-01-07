@@ -41,7 +41,9 @@ export const workExperienceData = [
           "프리미엄 골프채 브랜드인 마제스티의 리뉴얼 웹사이트를 구축하는 프로젝트입니다.",
         sub_description: [
           "Lerna를 활용하여 모노레포 구축, Nx를 사용하여 Task의 순서 및 의존성 관리",
-          "적응형 web, mobile, admin 페이지 개발",
+          "예약 관리, 문의, 렌탈 서비스 개발",
+          "마제스티 적응형 web, mobile 페이지 개발",
+          "Admin 페이지 개발",
           "이미지 업로드, 에디터, 비디오 처리, 애니메이션, carousel 등의 기능 구현",
           "다국어 지원",
         ],
