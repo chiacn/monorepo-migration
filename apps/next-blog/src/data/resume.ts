@@ -37,7 +37,8 @@ export const workExperienceData = [
       {
         title: "마제스티",
         date: "23.04 - 23.09",
-        description: "기존 마제스티 홈페이지의 리뉴얼 프로젝트입니다.",
+        description:
+          "프리미엄 골프채 브랜드인 마제스티의 리뉴얼 웹사이트를 구축하는 프로젝트입니다.",
         sub_description: [
           "Lerna를 활용하여 모노레포 구축, Nx를 사용하여 Task의 순서 및 의존성 관리",
           "적응형 web, mobile, admin 페이지 개발",
