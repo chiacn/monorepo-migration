@@ -5,10 +5,10 @@
 
 const navlinks: { idx: number; title: string; link: string }[] = [
   // { idx: 0, title: "Home", link: "/" },
-  { idx: 0, title: "BLOG", link: "/blog" },
-  { idx: 1, title: "ARTICLES", link: "/articles" },
-  { idx: 2, title: "PROJECTS", link: "/projects" },
-  { idx: 3, title: "RESUME", link: "/resume" },
+  // { idx: 0, title: "BLOG", link: "/blog" },
+  { idx: 0, title: "ARTICLES", link: "/articles" },
+  { idx: 1, title: "PROJECTS", link: "/projects" },
+  { idx: 2, title: "RESUME", link: "/resume" },
 ];
 
 export default navlinks;
