@@ -10,13 +10,17 @@ export const articlesPath = [
   // directory -----------------------------------------
 
   // Articles ------------------------------------------
-  { slug: ["JavaScript"] },
+  // { slug: ["CS"] },
+  // { slug: ["JavaScript"] },
+  { slug: ["Articles"] },
   { slug: ["Front"] },
-  { slug: ["CS"] },
   { slug: ["트러블슈팅"] },
 
   {
-    slug: ["JavaScript", "Event Loop의 이해.mdx"],
+    slug: ["Articles", "Event Loop의 이해.mdx"],
+  },
+  {
+    slug: ["Articles", "CORS의 이해.mdx"],
   },
   {
     slug: ["Front", "WebView의 Service Worker 사용 방식에 대해 알아보기.mdx"],
@@ -27,10 +31,6 @@ export const articlesPath = [
       "(Nuxt3) ts 파일에서 useRuntimeConfig로 환경변수를 못 가져오는 이유.mdx",
     ],
   },
-  {
-    slug: ["CS", "CORS의 이해.mdx"],
-  },
-
   {
     slug: [
       "트러블슈팅",
