@@ -32,6 +32,9 @@ export const articlesPath = [
     ],
   },
   {
+    slug: ["트러블슈팅", "Carousel 깜빡임 이슈.mdx"],
+  },
+  {
     slug: [
       "트러블슈팅",
       "(Nuxt3) SSR 환경에서 새로고침 시 getActivePinia() was called but there was no active Pinia 오류.mdx",
