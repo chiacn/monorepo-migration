@@ -32,7 +32,7 @@ export const articlesPath = [
     ],
   },
   {
-    slug: ["트러블슈팅", "Carousel 깜빡임 이슈.mdx"],
+    slug: ["트러블슈팅", "Transition 전환 깜박임 이슈.mdx"],
   },
   {
     slug: [
