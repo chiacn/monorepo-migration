@@ -16,7 +16,7 @@ thumbnail: Carousel 깜빡임 이슈.png
 
 전반적인 탭 구조는 아래와 같다.
 
-<img src="/image/Carousel 깜빡임 이슈/구조.png" width="700" height="400" />
+![Carousel 깜빡임 이슈](https://github.com/user-attachments/assets/4fe9f598-66ef-494c-865f-0acb92b2a37c)
 
 ```ts
 // HomeBody.vue
@@ -47,14 +47,14 @@ thumbnail: Carousel 깜빡임 이슈.png
 
 결론부터 얘기하자면, <br/>
 Vue transition으로 탭 화면이 교체될 때 Swiper(슬라이더)가 여전히 작동하고 있고 이에 따라
-**Layer가 교차**되거나 새로 생기는 과정에서 깜빡임이 발생하는 것이었다.
+**Layer**가 교차되거나 새로 생기는 과정에서 **깜빡임**이 발생하는 것이었다.
 
 다시 설명하자면 깜빡임은 아래의 절차에 의해 일어나는 것으로 추정된다.
 
 1. 해당 서비스에서 **각 탭 화면의 컴포넌트**는 탭을 옮길 때마다 제거되고, 새로 생성되면 교체된다.
-2. 이 때 transition 컴포넌트는 자식 컴포넌트(새로운 탭)가 나타나 전환이 시작될 때 translate3d 속성을 추가, 트랜지션이 완료되면 다시 삭제해준다.
-3. 트랜지션이 완료되어 translate3d가 제거되면 다시 일반 GPU Layer -> Render Layer로 돌아가며 합성 과정을 다시 거치게 된다.
-4. 이 때 새 탭 컴포넌트가 Render Layer로 복귀하면서 이미 GPU 레이어 위에서 동작 중인 Swiper와의 레이어 순서를 재조정한다.
+2. 이 때 transition 컴포넌트는 자식 컴포넌트(새로운 탭)가 나타나 전환이 시작될 때 **translate3d** 속성을 추가, 트랜지션이 완료되면 다시 삭제해준다.
+3. 트랜지션이 완료되어 translate3d가 제거되면 다시 일반 **GPU Layer -> Render Layer**로 돌아가며 합성 과정을 다시 거치게 된다.
+4. 이 때 새 탭 컴포넌트가 Render Layer로 복귀하면서 이미 GPU 레이어 위에서 동작 중인 Swiper와의 레이어 순서를 **재조정**한다.
    -> 이 때 일시적으로 Swiper 레이어가 최상단에 올라왔다가 다시 새 탭이 위로 덮이면서 깜빡임이 발생할 수 있다.
 
 ### 해결
