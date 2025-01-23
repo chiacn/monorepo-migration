@@ -40,6 +40,9 @@ export const articlesPath = [
       "(Nuxt3) SSR 환경에서 새로고침 시 getActivePinia() was called but there was no active Pinia 오류.mdx",
     ],
   },
+  {
+    slug: ["트러블슈팅", "vue3-perfect-scrollbar 스크롤 충돌 이슈 해결.mdx"],
+  },
   // ----------------------------------------------------
 
   // BLOG ----------------------------------------------
