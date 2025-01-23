@@ -47,34 +47,64 @@ export default function useHandleDataStructure({
   }
 
   const assignDiagramIds = (node: any, depth = 0) => {
-    // diagramId를 depth와 step으로 구성하여 고유 ID로 설정
+    // node가 존재하지 않거나 객체가 아닌 경우 바로 반환
+    if (!node || typeof node !== "object") return null;
 
+    // diagramId 할당 로직
+    let diagramId = "";
     if (inquiryType === "tree") {
-      const diagramId = `${depth}-${node.content ? "root" : node.element_name}`;
-
-      node.diagramId = diagramId;
-      if (node.content && node.content.length > 0) {
-        node.content.forEach((child: any) => {
-          assignDiagramIds(child, depth + 1);
-        });
-      } else if (node.related_elements && node.related_elements.length > 0) {
-        node.related_elements.forEach((child: any) => {
-          assignDiagramIds(child, depth + 1);
-        });
-      }
-      return node;
+      diagramId = `${depth}-${
+        node.content ? "root" : node.element_name || "unknown"
+      }`;
+    } else {
+      diagramId = `${depth}-${node.step || "root"}`;
     }
-    const diagramId = `${depth}-${node.step || "root"}`;
+
     node.diagramId = diagramId;
 
-    if (node.steps && node.steps.length > 0) {
-      node.steps.forEach((child: any) => {
-        assignDiagramIds(child, depth + 1);
-      });
+    // 하위 요소가 배열인지 체크 후 재귀 호출
+    if (Array.isArray(node.content)) {
+      node.content.forEach((child: any) => assignDiagramIds(child, depth + 1));
+    } else if (Array.isArray(node.related_elements)) {
+      node.related_elements.forEach((child: any) =>
+        assignDiagramIds(child, depth + 1),
+      );
+    } else if (Array.isArray(node.steps)) {
+      node.steps.forEach((child: any) => assignDiagramIds(child, depth + 1));
     }
 
     return node;
   };
+
+  // const assignDiagramIds = (node: any, depth = 0) => {
+  //   // diagramId를 depth와 step으로 구성하여 고유 ID로 설정
+
+  //   if (inquiryType === "tree") {
+  //     const diagramId = `${depth}-${node.content ? "root" : node.element_name}`;
+
+  //     node.diagramId = diagramId;
+  //     if (node.content && node.content.length > 0) {
+  //       node.content.forEach((child: any) => {
+  //         assignDiagramIds(child, depth + 1);
+  //       });
+  //     } else if (node.related_elements && node.related_elements.length > 0) {
+  //       node.related_elements.forEach((child: any) => {
+  //         assignDiagramIds(child, depth + 1);
+  //       });
+  //     }
+  //     return node;
+  //   }
+  //   const diagramId = `${depth}-${node.step || "root"}`;
+  //   node.diagramId = diagramId;
+
+  //   if (node.steps && node.steps.length > 0) {
+  //     node.steps.forEach((child: any) => {
+  //       assignDiagramIds(child, depth + 1);
+  //     });
+  //   }
+
+  //   return node;
+  // };
 
   const setSpreadSteps = (structure: any) => {
     setEntireSpreadedStep([]);

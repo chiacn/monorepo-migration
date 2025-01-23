@@ -18,9 +18,11 @@ import { Structures } from "@/lib/types";
 export default function ContainerForDiagram({
   children,
   structureKey,
+  type,
 }: {
   children: string;
   structureKey: string;
+  type: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -49,6 +51,7 @@ export default function ContainerForDiagram({
           <DiagramContainerForText
             displayText={children}
             structures={getStructures(structureKey)}
+            type={type}
           />
         </DialogContent>
       </Dialog>

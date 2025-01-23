@@ -21,9 +21,11 @@ import { Structures } from "@/lib/types";
 export default function DiagramContainerForText({
   displayText,
   structures,
+  type,
 }: {
   displayText: string;
   structures: Structures;
+  type?: string;
 }) {
   // LLM 테스트 ---------------------------------------------
 
@@ -74,32 +76,34 @@ export default function DiagramContainerForText({
   const [isLoading, setIsLoading] = useState(false);
 
   function extractText(elements: any) {
-    return elements
+    const result = elements.props.children.props.children
       .map((element: any) => {
-        if (element.type === "p") {
-          if (Array.isArray(element.props.children)) {
-            return element.props.children
-              .map((child: any) => {
-                if (typeof child === "string") return child.trim();
-                if (child.type === "strong") return child.props.children;
-                if (child.type === "br") return "\n"; // br 태그는 줄바꿈으로 처리
-              })
-              .join("")
-              .trim();
-          }
-          return element.props.children.trim();
-        }
         if (element.type === "img") {
           return `[이미지: ${element.props.src}, 크기: ${element.props.width}x${element.props.height}]`;
         }
-        return "";
+
+        if (Array.isArray(element.props.children)) {
+          return element.props.children
+            .map((child: any) => {
+              if (typeof child === "string") return child; // 공백 유지
+              if (child.type === "span" || child.type === "p")
+                return child.props.children;
+              if (child.type === "strong") return child.props.children;
+              if (child.type === "br") return "\n"; // br 태그는 줄바꿈으로 처리
+            })
+            .join("")
+            .replace(/\r\n/g, "\n"); // 줄바꿈 문자 일관성 유지
+        }
+        return element.props.children;
       })
-      .filter((text: string) => text)
-      .join("\n\n");
+      .join("");
+    // .filter((text: string) => text.trim() !== "") // 빈 줄 제거
+    // .join("\n"); // 각 코드 라인 사이에 하나의 줄바꿈 추가
+    return result;
   }
 
   const injectPrompt = () => {
-    const initInquiryType = "tree";
+    const initInquiryType = type ? type : "tree";
     setInquiryType(initInquiryType); // 처음에는 tree 설정.
     setSubmittedText(
       typeof displayText === "object"
@@ -183,12 +187,12 @@ export default function DiagramContainerForText({
           }px`,
         }}
       >
-        <CommonToggleGroups
+        {/* <CommonToggleGroups
           items={inquiryTypeList}
           selectedValue={inquiryType}
           changeInquiryType={changeInquiryType}
           gap={80}
-        />
+        /> */}
         <div className="flex w-full mt-4"></div>
       </div>
 
