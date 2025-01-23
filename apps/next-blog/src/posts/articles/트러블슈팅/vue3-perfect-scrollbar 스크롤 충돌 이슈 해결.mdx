@@ -84,30 +84,36 @@ Call tree를 보면 <br/>
 즉, 라이브러리에서 updateGeometry가 실질적인 UI 업데이트를 담당하고 있기 때문에
 updateGeometry의 **호출 시점**이 scrollIntoView(\{ behavior: "smooth"\})와의 충돌에 영향을 주는 것으로 보인다.
 
+---
+
 다시 말해서,
 
-- updateGeometry에서 브라우저가 Recalculate Style, Layout 등을 강제 실행하면 브라우저 자체 애니메이션이 돌아가는 중이라도 라이브러리가 즉시 스크롤바 위치를 갱신하려고한다.
-- 결과적으로 scroll 이벤트가 매 프레임 발생, updateGeometry()가 동시에 실행되면서 브라우저 애니메이션을 덮어써버리거나 타이밍이 충돌하는 이슈로 추정된다.
+- updateGeometry에서 **Recalculate Style, Layout 등을 강제 실행**하면 브라우저 자체 애니메이션이 돌아가는 중이라도 라이브러리가 즉시 **스크롤바 위치를 갱신**하려고한다.
+- 결과적으로 scroll 이벤트가 매 프레임 발생, updateGeometry()가 동시에 실행되면서 **브라우저 애니메이션을 덮어써버리거나 타이밍이 충돌**하는 이슈로 추정된다.
 
-반면 브라우저의 가로 크기가 줄어들면 Recalculate style이 조금 더 빨리 혹은 우선순위가 높게 호출되면서 Perfect Scrollbar가 적절한 타이밍에 반응할 수 있었던 것으로 추정해 볼 수 있다.
+---
+
+**반면** 브라우저의 **가로 크기가 줄어들면** Recalculate style이 조금 더 빨리 혹은 우선순위가 높게 호출되면서 Perfect Scrollbar가 적절한 타이밍에 반응할 수 있었던 것으로 추정해 볼 수 있다.
 
 아니나 다를까 node_module의 perfect-scrollbar.js에서 **updateGeometry 함수를 주석처리**해보니 부드러운 스크롤이 작동했다. 하지만 스크롤바 UI는 업데이트되지 않았다.
 updateGeometry 함수를 **setTimeout 함수로 감싸보니** 부드러운 스크롤이 작동 했지만 **스크롤바 UI가 끊기면서** 업데이트되는 문제가 있었다.
 이를 통해 ui 업데이트 타이밍이 충돌의 원인임을 짐작할 수 있었다.
 
+---
+
 정리하자면, <br/>
 
-- 가로 폭을 줄인 경우에는 Layout 재계산의 우선 순위가 높게 진행되면서 브라우저의 smooth scroll과의 충돌이 발생하지 않는다.
-- 가로 폭을 줄이지 않은 경우 스크롤 이벤트 때마다 updateGeometry에 의해 브라우저 애니메이션이 끊기거나 덮어씌워지는 결과가 발생한다.
+- 가로 폭을 줄인 경우에는 **Layout 재계산의 우선 순위가 높게 진행**되면서 브라우저의 smooth scroll과의 충돌이 발생하지 않는다.
+- 가로 폭을 줄이지 않은 경우 스크롤 이벤트 때마다 **updateGeometry에 의해 브라우저 애니메이션이 끊기거나 덮어씌워지는 결과**가 발생한다.
 
 ---
 
 ### 해결
 
-Perfect scrollbar는 기본적으로 스크롤 이벤트가 발생할 때마다 실제 스크롤 위치를 읽어 스크롤바 UI를 갱신하도록 설계되었다.
+Perfect scrollbar는 기본적으로 스크롤 **이벤트가 발생할 때마다 실제 스크롤 위치를 읽어** 스크롤바 UI를 갱신하도록 설계되었다.
 
-그런데 브라우저의 부드러운 스크롤 이동은 일정시간 동안(애니메이션) scrollTop을 서서히 변화시키는 구조이다.
-즉, **Perfect Scrollbar**가 브라우저의 스크롤 애니메이션 진행상황을 전혀 **인지하지 못한 채,**
+그런데 브라우저의 **부드러운 스크롤 이동**은 일정시간 동안(애니메이션) scrollTop을 **서서히 변화**시키는 구조이다.
+즉, Perfect Scrollbar가 브라우저의 스크롤 애니메이션 진행상황을 전혀 **인지하지 못한 채,**
 스크롤 이벤트마다 동기적으로 updateGeometry()를 실행하기 때문에 발생하는 문제이다.
 
 라이브러리 외부 환경의 복잡도로 인하여 update 타이밍 등 내부 동작이 영향을 받을 수 있다.
@@ -172,8 +178,11 @@ async function smoothScrollToElement(psInstance, targetElement) {
 }
 ````
 
-<br />
+---
+
 ### 코드 변경 후 작동화면 ![Image](https://github.com/user-attachments/assets/55e00dd1-d449-4db9-af68-2e495f63a7ff)
+
+---
 
 <br />
 <br />
