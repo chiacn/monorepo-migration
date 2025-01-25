@@ -14,7 +14,7 @@ import ContainerForDiagram from "./ContainerForDiagram";
 export default function FlowDiagramButton() {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="fixed top-24 right-32 z-50">
+    <div className="fixed top-24 right-32 z-50 hidden md:block">
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           <Button className="p-3 rounded-full bg-black text-white shadow-lg transition focus:outline-none">
