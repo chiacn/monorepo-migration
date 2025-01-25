@@ -16,7 +16,7 @@ export default async function ArticleLayout({
   const { markdownSource } = await getArticle(articlePath);
 
   return (
-    <div className="prose relative">
+    <div className="prose relative w-4/5 md:w-full">
       <FlowDiagramButton />
       <MDXRemote
         source={markdownSource}
