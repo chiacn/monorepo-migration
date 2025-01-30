@@ -72,8 +72,9 @@ Call tree 상 Scroll 이벤트가 발생했을 때 Perfect scrollbar 내부에�
 4. updateGeometry 내부에서 DOM 정보를 가져오고 스타일 재계산이 일어남. (Recalculate style. Layout)
 5. processScrollDiff 함수가 호출되어 스크롤의 변화 (수직인지 수평인지 등)를 살펴보고 해당되는 이벤트를 발생시킴.
 6. processScrollDiff > dispatchEvent에서 발생한 이벤트가 microTask 단계에서 처리됨.
-   <br />> 그런데 왜 가로 크기를 줄인 경우에는 정상 작동하고 그렇지 않은 경우
-   부드러운 스크롤이 작동하지 않았을까?
+
+---
+> 그런데 왜 **가로 크기**를 줄인 경우에는 정상 작동하고 그렇지 않은 경우 부드러운 스크롤이 작동하지 않았을까?
 
 우선 정상적으로 작동하는 경우와 아닌 경우의 주요 차이점 중 하나는 **updateGeometry의 호출 타이밍**이다.
 
