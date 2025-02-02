@@ -40,6 +40,7 @@ function CollapsibleItem({
         className={`overflow-hidden transition-all duration-300 ${
           isOpen ? "max-h-96 mt-2" : "max-h-0"
         }`}
+        style={{ willChange: "max-height, margin", transform: "translateZ(0)" }}
       >
         <ul className="ml-4" style={{ listStyleType: "circle" }}>
           {description.map((desc, i) => (
