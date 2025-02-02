@@ -1,6 +1,57 @@
+"use client";
+import React, { useState } from "react";
 import CommonLineDivider from "@/components/CommonLineDivider";
 import { workExperienceData } from "@/data/resume";
-import React from "react";
+
+function CollapsibleItem({
+  title,
+  description,
+}: {
+  title: string;
+  description: string[];
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="mb-4">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full text-left font-bold focus:outline-none flex items-center justify-between"
+      >
+        <span>{title}</span>
+        {/* 화살표 아이콘: 열렸을 때 회전 */}
+        <svg
+          className={`w-4 h-4 transition-transform duration-300 ${
+            isOpen ? "transform rotate-180" : ""
+          }`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
+      <div
+        className={`overflow-hidden transition-all duration-300 ${
+          isOpen ? "max-h-96 mt-2" : "max-h-0"
+        }`}
+      >
+        <ul className="ml-4" style={{ listStyleType: "circle" }}>
+          {description.map((desc, i) => (
+            <li key={i} className="mb-1">
+              {desc}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
 
 export default function Page() {
   return (
@@ -41,6 +92,7 @@ export default function Page() {
           <br />
           이러한 저의 경험과 새로운 문제를 해결하는데 적극적인 자세로 제가 맡게
           될 서비스의 완성도에 기여하고 싶습니다.
+          <br />
           <br />
         </section>
       </CommonLineDivider>
@@ -95,7 +147,7 @@ export default function Page() {
                         {/* 하위 설명(sub_description) 처리 */}
                         <ul className="mt-4">
                           {project.sub_description.map((item, itemIndex) => {
-                            // 문자열 배열로만 구성된 경우
+                            // 문자열 배열인 경우 그대로 렌더링
                             if (typeof item === "string") {
                               return (
                                 <li
@@ -107,24 +159,14 @@ export default function Page() {
                                 </li>
                               );
                             }
-                            // title과 description 배열을 가진 객체인 경우
+                            // title과 description 배열을 가진 객체인 경우 -> CollapsibleItem으로 처리
                             else {
                               return (
                                 <li key={itemIndex} className="mb-4">
-                                  {/* 소제목 */}
-                                  <div className="font-bold">{item.title}</div>
-                                  {/* 소제목 하위 세부 설명 */}
-
-                                  <ul
-                                    className="ml-4 mt-2"
-                                    style={{ listStyleType: "circle" }}
-                                  >
-                                    {item.description.map((desc, descIndex) => (
-                                      <li key={descIndex} className="mb-1">
-                                        {desc}
-                                      </li>
-                                    ))}
-                                  </ul>
+                                  <CollapsibleItem
+                                    title={item.title}
+                                    description={item.description}
+                                  />
                                 </li>
                               );
                             }
