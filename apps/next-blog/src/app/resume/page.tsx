@@ -18,6 +18,31 @@ export default function Page() {
         <section className="flex justify-center sm:justify-start mt-6">
           <span>devhhbb@gmail.com</span>
         </section>
+
+        <section className="mt-4 text-gray-600 font-light text-sm whitespace-pre-line">
+          안녕하세요 프론트엔드 개발자 최한봄입니다 <br />
+          <br />
+          저는 업무를 하면서 어떠한 문제에 직면했을 때 단순히 그 문제를
+          봉합하는데 그치지 않고 근본적인 문제를 해결하고자 노력하는 태도를
+          가지고 있으며 완성도 있는 서비스를 위한 집요함이 저의 장점이라고
+          생각합니다. <br />
+          <br />
+          저는 독학으로 개발을 공부해 개발자로서의 첫 발을 내딛은 후, 항저우
+          아시안게임 GMS라는 비교적 큰 규모의 프로젝트를 맡아 세 번의 강도 높은
+          테스트 절차 동안 약 500개 이상의 이슈를 처리하며 오픈 과정까지
+          참여했습니다. <br />
+          <br />
+          새벽 근무를 하며 서비스의 완성도를 높히는 경험을 하면서 제가 맡은
+          서비스를 끝까지 마무리하며 성장할 수 있었고, 이후에는 약 20개 이상의
+          하위 서비스를 가지고 있는 골프 플랫폼 서비스 회사에서 개발 및 운영을
+          경험하면서 프론트엔드 개발자로서 더 좋은 유저 경험과 코드에 대해
+          고민하며 제가 하는 일에 흥미와 보람을 느끼게 되었습니다.
+          <br />
+          <br />
+          이러한 저의 경험과 새로운 문제를 해결하는데 적극적인 자세로 제가 맡게
+          될 서비스의 완성도에 기여하고 싶습니다.
+          <br />
+        </section>
       </CommonLineDivider>
 
       <CommonLineDivider>
@@ -66,15 +91,44 @@ export default function Page() {
                       </span>
                       <span className="mt-2 sm:mt-0 sm:ml-6 whitespace-pre-line sm:w-3/4">
                         {project.description}
-                        <ul
-                          className="mt-4 ml-4 sm:ml-6"
-                          style={{ listStyleType: "circle" }}
-                        >
-                          {project.sub_description.map((desc, descIndex) => (
-                            <li key={descIndex} className="mb-2">
-                              {desc}
-                            </li>
-                          ))}
+
+                        {/* 하위 설명(sub_description) 처리 */}
+                        <ul className="mt-4">
+                          {project.sub_description.map((item, itemIndex) => {
+                            // 문자열 배열로만 구성된 경우
+                            if (typeof item === "string") {
+                              return (
+                                <li
+                                  key={itemIndex}
+                                  className="mb-2 ml-4"
+                                  style={{ listStyleType: "circle" }}
+                                >
+                                  {item}
+                                </li>
+                              );
+                            }
+                            // title과 description 배열을 가진 객체인 경우
+                            else {
+                              return (
+                                <li key={itemIndex} className="mb-4">
+                                  {/* 소제목 */}
+                                  <div className="font-bold">{item.title}</div>
+                                  {/* 소제목 하위 세부 설명 */}
+
+                                  <ul
+                                    className="ml-4 mt-2"
+                                    style={{ listStyleType: "circle" }}
+                                  >
+                                    {item.description.map((desc, descIndex) => (
+                                      <li key={descIndex} className="mb-1">
+                                        {desc}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </li>
+                              );
+                            }
+                          })}
                         </ul>
                       </span>
                     </div>
