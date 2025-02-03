@@ -24,6 +24,7 @@ export const projectData = [
     description: "효율적인 자습을 위한 시간 관리 타이머",
     sub_description: [
       "React의 기본적인 상태관리를 이해하기 위한 useEffect, useState, useRef, useReducer 등 기본 Hook 사용",
+      "Context API를 사용하여 상태 관리",
       "React 환경에서 setInterval 사용의 문제점을 다룬 Article 내용 실습\n( https://overreacted.io/making-setinterval-declarative-with-react-hooks/ )",
     ],
     techStack: "React | TypeScript",
