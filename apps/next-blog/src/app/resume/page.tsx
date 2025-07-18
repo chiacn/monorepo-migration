@@ -11,30 +11,35 @@ function CollapsibleItem({
   description: string[];
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const hasDescription = description.length > 0;
 
   return (
     <div className="mb-4">
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full text-left font-bold focus:outline-none flex items-center justify-between"
+        onClick={() => hasDescription && setIsOpen(!isOpen)}
+        className="w-full text-left font-medium focus:outline-none flex items-center justify-between"
       >
         <span>{title}</span>
         {/* 화살표 아이콘: 열렸을 때 회전 */}
-        <svg
-          className={`w-4 h-4 transition-transform duration-300 ${
-            isOpen ? "transform rotate-180" : ""
-          }`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
+        {hasDescription ? (
+          <svg
+            className={`w-4 h-4 transition-transform duration-300 ml-4 shrink-0 ${
+              isOpen ? "transform rotate-180" : ""
+            }`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        ) : (
+          <div className="w-2 h-4" />
+        )}
       </button>
       <div
         className={`overflow-hidden transition-all duration-300 ${
