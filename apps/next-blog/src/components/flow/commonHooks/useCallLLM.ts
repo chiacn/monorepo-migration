@@ -436,36 +436,86 @@ export default function useCallLLM() {
           output: createPrompt(input, inquiryType, topic).promptMessages[1],
         };
 
-      const checkService = (service: string) => {
-        if (service === "groq") {
-          return new ChatGroq({
-            apiKey: process.env.NEXT_PUBLIC_GROQ_API_KEY2,
-            model: serviceInfo.model,
-            temperature: 0.1,
-            maxTokens: undefined,
-            maxRetries: 2,
-            // other params...
-          });
+      // * Cloudflare Worker 사용으로 불필요 코드 주석 ------------------------------------
+      // const checkService = (service: string) => {
+      //   if (service === "groq") {
+      //     return new ChatGroq({
+      //       apiKey: process.env.NEXT_PUBLIC_GROQ_API_KEY2,
+      //       model: serviceInfo.model,
+      //       temperature: 0.1,
+      //       maxTokens: undefined,
+      //       maxRetries: 2,
+      //       // other params...
+      //     });
+      //   }
+
+      //   // TODO: 추후 GPT 연동? (Usage Limits 옵션이 있어서 안전성 높음)
+      //   return new ChatGroq({
+      //     apiKey: process.env.NEXT_PUBLIC_GROQ_API_KEY2,
+      //     model: serviceInfo.model,
+      //     temperature: 0.2,
+      //     maxTokens: undefined,
+      //     maxRetries: 2,
+      //     // other params...
+      //   });
+      // };
+
+      // const llm = checkService(serviceInfo.service);
+
+      // const prompt = createPrompt(input, inquiryType, topic);
+      // // console.log(prompt.promptMessages[1]);
+      // const chain = prompt.pipe(llm).pipe(new StringOutputParser());
+      // const output = await chain.invoke({});
+      // return output;
+      // * ------------------------------------------------------------------------------
+      const prompt = createPrompt(input, inquiryType, topic);
+      const lcMessages = await prompt.formatMessages({}); // LangChain 메시지 객체 배열
+
+      // LangChain 메시지 → Groq 형식으로 변환
+      // const groqMessages = lcMessages.map((m: any) => ({
+      //   role: m._getType?.() ?? m.role, // "system" | "user" | "assistant"
+      //   content: m.content,
+      // }));
+      const groqMessages = lcMessages.map((m: any) => {
+        const rawRole = m._getType?.() ?? m.role;
+
+        let role: "system" | "user" | "assistant";
+        switch (rawRole) {
+          case "human":
+            role = "user";
+            break;
+          case "ai":
+          case "assistant":
+            role = "assistant";
+            break;
+          case "system":
+            role = "system";
+            break;
+          default:
+            throw new Error(`Invalid role: ${rawRole}`);
         }
 
-        // TODO: 추후 GPT 연동? (Usage Limits 옵션이 있어서 안전성 높음)
-        return new ChatGroq({
-          apiKey: process.env.NEXT_PUBLIC_GROQ_API_KEY2,
-          model: serviceInfo.model,
-          temperature: 0.2,
-          maxTokens: undefined,
-          maxRetries: 2,
-          // other params...
-        });
+        return {
+          role,
+          content: m.content,
+        };
+      });
+
+      const payload = {
+        model: serviceInfo.model,
+        messages: groqMessages,
+        temperature: 0.1,
       };
 
-      const llm = checkService(serviceInfo.service);
+      const resp = await fetch("https://groq-proxy.devhhbb1.workers.dev", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-      const prompt = createPrompt(input, inquiryType, topic);
-      // console.log(prompt.promptMessages[1]);
-      const chain = prompt.pipe(llm).pipe(new StringOutputParser());
-      const output = await chain.invoke({});
-      return output;
+      if (!resp.ok) throw new Error(`Groq error ${resp.status}`);
+      const data = await resp.json();
+      return data.choices[0].message.content; // Groq 응답 본문
     } catch (error: any) {
       throw new Error(error.message);
     }
