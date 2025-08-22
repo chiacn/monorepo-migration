@@ -1,0 +1,14 @@
+{
+  "name": "@monorepo-migration/source",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {},
+  "private": true,
+  "dependencies": {
+    "app": "0.1.0"
+  },
+  "devDependencies": {
+    "@nx/workspace": "21.4.0",
+    "nx": "21.4.0"
+  }
+}
