@@ -9,6 +9,8 @@
   },
   "devDependencies": {
     "@nx/workspace": "21.4.0",
-    "nx": "21.4.0"
+    "nx": "21.4.0",
+    "@nx/eslint": "21.4.0",
+    "@nx/vite": "21.4.0"
   }
 }
