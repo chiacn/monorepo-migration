@@ -1,0 +1,71 @@
+---
+title: Transition 전환 깜박임 이슈
+date: 2024-08-23
+thumbnail: Carousel 깜빡임 이슈.png
+---
+
+## Transition 전환 깜박임 이슈
+
+### 개요
+
+이 프로젝트는 Webview 기반의 하이브리드 앱에서
+페이지 전환을 모바일처럼 보이게 하기 위해 **Stack 구조로 화면을 겹친 상태**로 유지하고 있었고
+각 서비스 내에서 탭 화면 변경을 좌우 **스와이퍼 Carousel**로 구현하고 있었다.
+
+탭 변경 시점에 화면이 잠시 깜빡이는 이슈가 있었는데 운 좋게도 마침 학습 중이었던 **GPU Layer**와 **Composite**에 대한 내용을 파보면서 공부할 수 있어서 좋았다.
+
+전반적인 탭 구조는 아래와 같다.
+
+![Carousel 깜빡임 이슈](https://github.com/user-attachments/assets/4fe9f598-66ef-494c-865f-0acb92b2a37c)
+
+```ts
+// HomeBody.vue
+<transition>
+  <slot></slot>
+</transition>
+```
+
+```ts
+  // 해당 서비스 Container
+  <home-body>
+    <component
+      :is="currentComponent"
+    />
+  </home-body>
+```
+
+```ts
+// service home 내부의 탭들
+<div></div>
+```
+
+### 원인
+
+탭 변경 이후 전체 화면이 재렌더링되는 문제는 아니었다.
+다만 이 프로젝트의 각 페이지에서는 vue-awesome-swiper를 이용하여 좌우 이미지 슬라이더를 표현하고 있었는데 이 부분을 주석처리해주니
+깜빡임이 나타나지 않았다.
+
+결론부터 얘기하자면, <br/>
+Vue transition으로 탭 화면이 교체될 때 Swiper(슬라이더)가 여전히 작동하고 있고 이에 따라
+**Layer**가 교차되거나 새로 생기는 과정에서 **깜빡임**이 발생하는 것이었다.
+
+다시 설명하자면 깜빡임은 아래의 절차에 의해 일어나는 것으로 추정된다.
+
+1. 해당 서비스에서 **각 탭 화면의 컴포넌트**는 탭을 옮길 때마다 제거되고, 새로 생성되면 교체된다.
+2. 이 때 transition 컴포넌트는 자식 컴포넌트(새로운 탭)가 나타나 전환이 시작될 때 **translate3d** 속성을 추가, 트랜지션이 완료되면 다시 삭제해준다.
+3. 트랜지션이 완료되어 translate3d가 제거되면 다시 일반 **GPU Layer -> Render Layer**로 돌아가며 합성 과정을 다시 거치게 된다.
+4. 이 때 새 탭 컴포넌트가 Render Layer로 복귀하면서 이미 GPU 레이어 위에서 동작 중인 Swiper와의 레이어 순서를 **재조정**한다.
+   -> 이 때 일시적으로 Swiper 레이어가 최상단에 올라왔다가 다시 새 탭이 위로 덮이면서 깜빡임이 발생할 수 있다.
+
+### 해결
+
+원래는 슬라이드가 화면에 노출되지 않는 경우 중지하는 것이 선행되어야 했다.
+하지만 Side effect를 고려, 명시적으로 탭 컴포넌트에 translateZ(0) 속성을 부여해 Render Layer로 전환되지 않도록 했다.
+
+```ts
+<div style="transform:translateZ(0)"></div>
+```
+
+<br />
+<br />
+<br />

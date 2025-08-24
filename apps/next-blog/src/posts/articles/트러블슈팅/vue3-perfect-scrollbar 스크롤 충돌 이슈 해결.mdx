@@ -1,0 +1,190 @@
+---
+title: vue3-perfect-scrollbar 스크롤 충돌 이슈 해결
+date: 2024-07-19
+thumbnail: 스크롤 충돌 이슈.png
+---
+
+## vue3-perfect-scrollbar 스크롤 충돌 이슈 해결
+
+### 문제
+
+개발 중이던 프로젝트에서 **vue3-perfect-scrollbar** 라이브러리를 사용하고 있었다. <br/>
+요구 사항 중 아코디언 리스트에서 특정 버튼을 클릭하면 다른 리스트가 펼쳐지면서 해당 좌표로 스크롤되어야 한다는 요건이 있어서
+**ref.scrollIntoView\(\{behavior: "smooth"\}\);** 를 사용해서 해당 element로 스크롤이 이동되게 구현하려 했는데 작동을 하지 않았다.
+
+#### 예시화면
+
+a. smooth 옵션 적용 x
+(해당 위치로 곧바로 스크롤 이동)
+![Image](https://github.com/user-attachments/assets/4e52f449-4b6e-40d4-9d92-109442976e4a)
+
+---
+
+b. smooth 옵션 적용 o
+(스크롤 이동이 작동 안 함)
+![Image](https://github.com/user-attachments/assets/f426a1c7-7144-4500-b5d1-211966a96255)
+
+---
+
+### 디버깅 과정
+
+#### 단서 1. 현재 화면에서 scroll 이벤트는 어떤 로직과 엮여 있나.
+
+이 프로젝트에서는 vue3-perfect-scrollbar 라이브러리를 사용하고 있었다. <br />
+Perfect scrollbar 라이브러리는 브라우저의 scroll 이벤트를 받아 Perfect scrollbar의 ui를 업데이트하는 방식으로 작동하는데 <br />
+performance 탭에서 click 이벤트 이후에 작동하는 scroll 이벤트의 Call tree을 살펴보니 역시나 perfect-scrollbar가 개입되고 있었다.
+
+#### 단서 2. Performance 탭에서의 구성이 다르다.<br/>
+
+> #### a. \(\{behavior: "smooth"\}\) 적용 시에도 Scroll 이벤트가 한 번밖에 발생하지 않았다.
+
+기본적으로 부드러운 스크롤 옵션의 경우 스크롤의 움직임이 여러 번의 렌더링 과정을 거쳐 (쪼개서) 구현된다. <br />
+그래서 **\(\{behavior: "smooth"\}\) 옵션**을 주면 **여러 번의 Scroll 이벤트**가 실행되면서 여러 프레임에 걸쳐 scrollTop / scrollLeft를 점진적으로 변경하는 반면
+\(\{behavior: "smooth"\}\) 옵션을 **주지 않은 경우** **한 번의 scroll 이벤트**로 끝난다.
+
+그런데 Performance 탭에 Scroll 이벤트가 **한 번**밖에 발생하지 않았다는 것은 perfect scrollbar가 첫 스크롤 이벤트를 감지하고 처리하는 과정에서
+충돌이 일어나 다음 Scroll 이벤트를 진행하지 않았을 가능성을 생각해 볼 수 있다.
+
+> #### b. smooth 옵션이 작동하는 경우와 아닌 경우의 차이점
+
+결정적인 단서로 모바일 화면에서는 smooth 옵션을 준 scrollIntoView가 정상적으로 작동 했다.
+모바일 디바이스가 아닌 웹에서 가로 사이즈를 줄여서 확인해봐도 정상적으로 작동 했다.
+
+이 두 가지 케이스의 차이점을 확인해보기 위해서 Performance 탭의 Call tree 구성을 살펴봤다.
+
+**가로 너비를 축소한 상태에서 \{behavior: "smooth"\} 옵션을 줬을 때 (정상 작동 O)**
+![Image](https://github.com/user-attachments/assets/2a90515e-3458-4a34-baf4-1499eade48aa)
+
+---
+
+**가로 너비가 넓은 상태에서 \{behavior: "smooth"\} 옵션을 줬을 때 (정상 작동 X)**
+![Image](https://github.com/user-attachments/assets/e125b09b-fafa-43eb-abb1-98d4676b601a)
+
+- \{behavior: "smooth"\} 옵션을 줬을 때 화면이 아주 조금만 움직이고 scrollIntoView가 적용된 element까지 도달하지 않았다.
+
+---
+
+Call tree 상 Scroll 이벤트가 발생했을 때 Perfect scrollbar 내부에서 전반적으로 일어나는 일을 살펴보면 대략적으로 아래와 같은 일들이 일어난다.
+
+1. 브라우저 스크롤 발생 (Event: scroll)
+2. onScroll() 함수 실행 (Function call)
+3. updateGeometry() 함수 실행
+4. updateGeometry 내부에서 DOM 정보를 가져오고 스타일 재계산이 일어남. (Recalculate style. Layout)
+5. processScrollDiff 함수가 호출되어 스크롤의 변화 (수직인지 수평인지 등)를 살펴보고 해당되는 이벤트를 발생시킴.
+6. processScrollDiff > dispatchEvent에서 발생한 이벤트가 microTask 단계에서 처리됨.
+
+---
+> 그런데 왜 **가로 크기**를 줄인 경우에는 정상 작동하고 그렇지 않은 경우 부드러운 스크롤이 작동하지 않았을까?
+
+우선 정상적으로 작동하는 경우와 아닌 경우의 주요 차이점 중 하나는 **updateGeometry의 호출 타이밍**이다.
+
+Call tree를 보면 <br/>
+가로 너비를 축소했을 때는 **updateGeometry(여기서 Recalculate style 로직이 실행됨)가 먼저 호출**된 후 setTimeout 처리 로직이 발생하지만 <br/>
+축소하지 않았을 때는 (정상 작동 X) setTimeout 처리 로직 이후에 updateGeometry(나중에)가 실행된다.
+
+즉, 라이브러리에서 updateGeometry가 실질적인 UI 업데이트를 담당하고 있기 때문에
+updateGeometry의 **호출 시점**이 scrollIntoView(\{ behavior: "smooth"\})와의 충돌에 영향을 주는 것으로 보인다.
+
+---
+
+다시 말해서,
+
+- updateGeometry에서 **Recalculate Style, Layout 등을 강제 실행**하면 브라우저 자체 애니메이션이 돌아가는 중이라도 라이브러리가 즉시 **스크롤바 위치를 갱신**하려고한다.
+- 결과적으로 scroll 이벤트가 매 프레임 발생, updateGeometry()가 동시에 실행되면서 **브라우저 애니메이션을 덮어써버리거나 타이밍이 충돌**하는 이슈로 추정된다.
+
+---
+
+**반면** 브라우저의 **가로 크기가 줄어들면** Recalculate style이 조금 더 빨리 혹은 우선순위가 높게 호출되면서 Perfect Scrollbar가 적절한 타이밍에 반응할 수 있었던 것으로 추정해 볼 수 있다.
+
+아니나 다를까 node_module의 perfect-scrollbar.js에서 **updateGeometry 함수를 주석처리**해보니 부드러운 스크롤이 작동했다. 하지만 스크롤바 UI는 업데이트되지 않았다.
+updateGeometry 함수를 **setTimeout 함수로 감싸보니** 부드러운 스크롤이 작동 했지만 **스크롤바 UI가 끊기면서** 업데이트되는 문제가 있었다.
+이를 통해 ui 업데이트 타이밍이 충돌의 원인임을 짐작할 수 있었다.
+
+---
+
+정리하자면, <br/>
+
+- 가로 폭을 줄인 경우에는 **Layout 재계산의 우선 순위가 높게 진행**되면서 브라우저의 smooth scroll과의 충돌이 발생하지 않는다.
+- 가로 폭을 줄이지 않은 경우 스크롤 이벤트 때마다 **updateGeometry에 의해 브라우저 애니메이션이 끊기거나 덮어씌워지는 결과**가 발생한다.
+
+---
+
+### 해결
+
+Perfect scrollbar는 기본적으로 스크롤 **이벤트가 발생할 때마다 실제 스크롤 위치를 읽어** 스크롤바 UI를 갱신하도록 설계되었다.
+
+그런데 브라우저의 **부드러운 스크롤 이동**은 일정시간 동안(애니메이션) scrollTop을 **서서히 변화**시키는 구조이다.
+즉, Perfect Scrollbar가 브라우저의 스크롤 애니메이션 진행상황을 전혀 **인지하지 못한 채,**
+스크롤 이벤트마다 동기적으로 updateGeometry()를 실행하기 때문에 발생하는 문제이다.
+
+라이브러리 외부 환경의 복잡도로 인하여 update 타이밍 등 내부 동작이 영향을 받을 수 있다.
+package-patch 라이브러리를 통해 vue3-perfect-scrollbar를 직접 수정하는 방법으로 진행할까 했지만
+
+이러한 점 때문에, 라이브러리 외부에서 브라우저가 진행하는 스크롤 애니메이션을 직접 컨트롤하고 **Perfect scrollbar의 UI를 직접
+update하는 방법**으로 해결했다.
+
+아래 코드는 브라우저에서 **Request Animation Frame**을 활용해 부드러운 스크롤 동작을 직접 구현하고 Perfect scrollbar instance의 **update**를 실행하여
+스크롤 ui를 갱신하는 해결 방법이다.
+
+```ts
+smoothScrollToElement(psInstance, scrollLocation.value[0]);
+```
+
+<ContainerForDiagram structureKey="perfectScrollbar" type="example">
+```ts
+function animateScroll(psInstance, to, duration = 300) {
+  const start = psInstance.ps.element.scrollTop;
+  const change = to - start;
+  const startTime = performance.now();
+
+function step(currentTime) {
+const elapsed = currentTime - startTime;
+const progress = Math.min(elapsed / duration, 1);
+
+    const ease =
+      progress < 0.5
+        ? 2 * progress * progress
+        : -1 + (4 - 2 * progress) * progress;
+
+    const newY = start + change * ease;
+    psInstance.ps.element.scrollTop = newY;
+
+    // 스크롤 위치가 변경되므로 ps도 갱신
+    psInstance.ps.update();
+
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    }
+
+}
+requestAnimationFrame(step);
+}
+
+````
+</ContainerForDiagram>
+
+```ts
+async function smoothScrollToElement(psInstance, targetElement) {
+  if (!psInstance) {
+    // ps가 없는 경우 기본 스크롤
+    targetElement.scrollIntoView({ behavior: "smooth" });
+    return;
+  }
+
+  const rect = targetElement.getBoundingClientRect();
+  // perfect-scrollbar는 브라우저의 스크롤바가 아니라 자체적인 스크로바를 사용하므로 ps.element.scrollTop으로 스크롤 위치를 가져와야 함.
+  const targetOffsetTop = rect.top + psInstance.ps.element.scrollTop;
+
+  animateScroll(psInstance, targetOffsetTop, 500);
+}
+````
+
+---
+
+### 코드 변경 후 작동화면 ![Image](https://github.com/user-attachments/assets/55e00dd1-d449-4db9-af68-2e495f63a7ff)
+
+---
+
+<br />
+<br />
+<br />

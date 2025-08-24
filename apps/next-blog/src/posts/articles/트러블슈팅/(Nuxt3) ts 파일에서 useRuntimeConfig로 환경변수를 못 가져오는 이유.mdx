@@ -1,0 +1,99 @@
+---
+title: (Nuxt3) ts 파일에서 useRuntimeConfig로 환경변수를 못 가져오는 이유
+date: 2023-09-17
+thumbnail: nuxt.png
+---
+
+## (Nuxt3) ts 파일에서 useRuntimeConfig로 환경변수를 못 가져오는 이유
+
+### 문제 상황
+
+Nuxt3와 typescript를 사용하는 환경에서 **ts 파일**에 **import.meta.env**로 환경변수를 가져와 data fetching 모듈을 만들려고 했다.
+
+이 경우 SSR 환경과 CSR 환경에서 모두 env 변수를 가져오기 위해 nuxt.config에서 정의한 뒤 **useRuntimeConfig**를 통해 해당 변수를 가져와야 하지만 ts 파일에서 useRuntimeConfig의 설정을 가져올 수 없었다.
+
+### 중간 정리
+
+- process.env는 **빌드 시점** 변수를 주입하는 방식이므로 SSR 환경에서는 사용할 수 있지만 CSR에서는 변수가 런타임 교체되지 않고 번들 시점에 고정된다.
+  <br />
+  -> SSR/CSR 모두에서 동적으로 변경 가능한 변수를 원한다면 nuxt.config.js의 **publicRuntimeConfig**를
+  정의해서 사용해야 한다.
+- useRuntimeConfig는 Nuxt의 런타임 설정값을 가져오는 유틸리티 함수다.
+- useRuntimeConfig는 **Nuxt 애플리케이션의 실행 환경**(Context)에 의존한다.
+- 여기서 말하는 ts 파일은 Vue의 composition을 사용하지 않는 일반 ts 파일을 말한다.
+
+### 원인
+
+Nuxt.js 프레임워크는 Vue.js 위에 구축되어 있다. 일반 Typescript 파일에서 useRuntimeConfig를 사용할 수 없는 주된 이유는
+이러한 파일이 Nuxt.js 애플리케이션의 런타임 컨텍스트 외부에 위치하고 있기 때문이다.
+
+useRuntimeConfig은 Nuxt.js의 런타임 컨텍스트 내에서만 접근 가능하다. 일반 TypeScript 파일은 Nuxt의 특정 라이프사이클이나
+컴포넌트 외부에서 실행되므로 useRuntimeConfig를 직접 사용할 수 없다.
+반면, Composable이나 플러그인에서는 Nuxt의 Context에 접근할 수 있다.
+
+### 해결
+
+상황에 따라 다르겠지만, <br/>
+주요 골자는 Nuxt 런타임 컨텍스트가 필요한 기능(useRuntimeConfig, useNuxtApp 등)을 사용하려면 해당 코드는
+Nuxt가 관리하는 영역 (component, plugin, composable 등) 안에서 동작해야 한다는 것이다. 대략적인 방법은 아래와 같다.
+
+1. Composable을 사용하는 방식
+
+- composable 생성 example
+  (원래는 useAsyncData를 wrapping한 data fetching 모듈인데 회사 코드라 예시 데이터로 대체)
+
+```ts
+// composables/useFetchData.ts
+export const useFetchData = (endpoint: string, options = {}) => {
+  const config = useRuntimeConfig(); // 환경 변수 가져오기
+  const apiBase = config.public.apiBase; // publicRuntimeConfig에서 API Base URL
+
+  return useAsyncData(endpoint, async () => {
+    const response = await fetch(`${apiBase}/${endpoint}`, options);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.statusText}`);
+    }
+    return await response.json();
+  });
+};
+```
+
+2. 빌드 시점 환경 변수 사용
+   런타임에 동적으로 변경되지 않는 환경변수라면, process.env처럼 빌드 시점에 주입되는 방법을 사용해도 된다.
+
+3. 플러그인 사용
+   Nuxt 초기화 시점에 환경 변수를 전역으로 주입할 수 있다.
+
+정의) plugins/myPlugin.ts
+
+```ts
+// plugins/myPlugin.ts
+export default defineNuxtPlugin((nuxtApp) => {
+  const config = useRuntimeConfig();
+  // config.public에 있는 값을 nuxtApp.provide 등으로 전역에 주입 가능
+  nuxtApp.provide("apiBase", config.public.apiBase);
+});
+```
+
+사용)
+
+```ts
+// composables/useAnotherFetch.ts
+export const useAnotherFetch = () => {
+  const nuxtApp = useNuxtApp();
+  const apiBase = nuxtApp.$apiBase; // 플러그인에서 주입한 전역 값
+
+  // ...
+};
+```
+
+### 결론
+
+**composable + 플러그인**을 활용한 data fetching 모듈을 만들고 그 안에서 useRuntimeConfig를 사용하는 것을 best practice로 결론 내렸다.
+
+그 이유는 아래와 같다.
+
+1. **SSR과 CSR을 모두 지원한다.**
+   -> process.env처럼 빌드 시점에만 값을 고정하는 방식이 아니라 SSR/CSR 모두에서 환경 변수를 안전하게 사용할 수 있다.
+
+2. **전역 공유 가능** - 핵심 로직은 플러그인으로 전역 공유 가능 + composable로 기능 단위 묶음 처리

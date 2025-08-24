@@ -1,0 +1,64 @@
+---
+title: (Nuxt3) SSR 환경에서 새로고침 시 getActivePinia() was called but there was no active Pinia 오류
+date: 2023-07-31
+thumbnail: nuxt.png
+---
+
+## (Nuxt3) SSR 환경에서 새로고침 시 getActivePinia() was called but there was no active Pinia 오류
+
+### 문제 상황
+
+Nuxt3와 함께 상태관리 라이브러리로 **Pinia**를 사용하는 SSR 환경이었다.
+Pinia의 useStore를 사용하는 페이지에서 정상적인 루트로 진입 시 잘 작동 됐지만,
+**새로고침** 시 아래와 같은 오류가 떴다.
+
+> "getActivePinia()" was called but there was no active Pinia.
+> Did you forget to install pinia? const pinia = createPinia() app.use(pinia) This will fail in production.
+
+#### 시도1 - useStore()에 Pinia 인스턴스를 직접 전달함.
+
+우선 이렇게 해보니 오류가 나타나진 않았다.
+하지만 이는 일시적인 해결책일 뿐, 당연하게도 애플리케이션 전역에서 하나의 인스턴스로 상태가 공유되지 않는 문제가 생긴다.
+여기서 알 수 있는 건, 이 문제는 useStore를 사용할 당시 **Pinia 인스턴스가 제대로 초기화되지 않기 때문에** 발생한다는 것이다.
+
+### 원인
+
+그렇다면 왜 특정 페이지에서 새로고침 후 useStore 사용 시 **Pinia 인스턴스**가 제대로 초기화되지 않는 문제가 생길까?
+
+1. 새로고침 시 useStore()를 호출했을 때 Pinia 인스턴스가 없다는 문제는 **SSR 환경**에서 **플러그인 초기화 순서**와 관련이 있다.
+
+2. SSR에서는 CSR과 달리 페이지 요청이 있을 때마다 **새로운 Vue 인스턴스**를 생성하게 된다.
+   -> 따라서 Pinia 인스턴스도 매 요청마다 새로 초기화되어야 한다. 이 과정에서 Pinia가 제대로 초기화되지 않으면 getActivePinia() 오류가 발생할 수 있다.
+
+3. 그런데 Nuxt 또는 Vue에서 플러그인으로 등록된 Pinia 인스턴스는 Vue의 실행 컨텍스트 안에서만 자동으로 주입된다.
+
+- 아직 Pinia 플러그인이 주입되지 전 상태에서 useStore()를 호출해 오류가 발생한 것.
+- .vue 파일의 setup 함수나 composable 등을 사용해야 정상적으로 Pinia 인스턴스를 받을 수 있다.
+
+  -> 즉, 내가 작성한 코드의 경우 **순수 .ts 파일**이기 때문에, 새로고침 시 Pinia 인스턴스가 자동으로 주입되지 않아서 생긴 문제였다.
+
+> #### 참고) Entry point
+>
+> - Entry point는 애플리케이션의 시작되는 지점을 의미한다. 일반적으로 main.ts 파일이 entry point로 지정된다.
+> - Entry point는 애플리케이션을 **번들링**할 때 **가장 먼저 처리**하는 파일로 전체 애플리케이션의 의존성 그래프를 형성하는 기준이 된다.
+>
+> #### Pages directory와 Entry point
+>
+> Client side Navigation"
+>
+> - 사용자가 애플리케이션 내에서 **페이지 간 이동**할 때 Nuxt3는 **기존의 Vue 애플리케이션 인스턴스**를 재사용하여 새로운 페이지 컴포넌트를 렌더링한다.
+> - 이 과정에서 Vite의 Entry point가 이미 실행된 상태이며 Pinia도 이미 초기화되어 있기 때문에 오류가 발생하지 않는다.
+>
+> "SSR
+>
+> - 사용자가 특정 페이지에서 새로고침을 할 경우 서버는 해당 페이지를 렌더링하기 위해 **새로운 Vue Application Instance를 생성**한다.
+> - 이 때 Vite CSR Entry point와는 달리 별도로 SSR Entry point가 사용될 수 있다. (별도의 렌더링 흐름을 가짐)
+
+### 정리
+
+어이 없었지만 이번에도 Vue 컨텍스트와 관련된 문제였다. 그래도 SSR에서 새로고침 시 Entry point 등이 어떻게 동작하는지에 대해
+알아 볼 수 있어서 좋았다.
+
+<br />
+<br />
+<br />
