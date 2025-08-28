@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "target": "esnext",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -18,8 +19,15 @@
         "name": "next"
       }
     ],
+    /*
+    *Note: "extends"
+      tsconfig.base.json을 extends하더라도, 기존 프로젝트의 tsconfig.json의 paths가 있으면 루트의 paths를 통째로 덮어쓴다.
+      nx import로 가져온 프로젝트이므로, 이 프로젝트 내에서 기존 @경로를 사용하던 부분을 보존하기 위해서 paths에 별도로 추가
+      * @경로 제거 전까지는 libs폴더의 라이브러리를 가져오기 위해 tsconfig.base.json에 정의한 별칭인 @libs/* 도 여기에 정의.
+    */
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
