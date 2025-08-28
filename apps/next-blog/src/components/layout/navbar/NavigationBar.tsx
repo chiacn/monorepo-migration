@@ -4,7 +4,7 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
+} from "@monorepo/ui";
 import navlinks from "@/data/navlink";
 import React from "react";
 import useNavigationHighlight from "../hooks/useNavigationHighlight";

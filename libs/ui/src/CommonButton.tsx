@@ -1,4 +1,5 @@
 import { Loader2 } from "lucide-react";
+import type { ReactNode } from "react";
 import { Button } from "./button";
 
 type variant =
@@ -12,11 +13,11 @@ type variant =
   | undefined;
 
 interface CommonButtonProps {
-  onClick: () => void;
+  onClick: (item?: any) => void | Promise<void | object>;
   className: string;
   variant?: variant;
   isLoading: boolean;
-  children: string | React.ReactNode;
+  children: ReactNode;
 }
 export default function CommonButton({
   onClick,

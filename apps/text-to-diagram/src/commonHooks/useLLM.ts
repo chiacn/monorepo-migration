@@ -1,4 +1,4 @@
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@monorepo/ui";
 import { useState } from "react";
 import useCallLLM from "./useCallLLM";
 

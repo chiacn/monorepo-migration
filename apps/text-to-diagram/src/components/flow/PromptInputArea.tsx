@@ -4,15 +4,17 @@ import {
   useLLMActions,
   useSetInquiryType,
 } from "@/contexts/LLMContext";
-import CommonButton from "../CommonButton";
-import CommonToggleGroups from "../CommonTogleGroup";
-import { Textarea } from "../ui/textarea";
+import {
+  CommonButton,
+  CommonToggleGroups,
+  Textarea,
+  toast,
+} from "@monorepo/ui";
 import PromptButton from "./PromptButton";
 import { useStructureDispatch } from "@/contexts/StructureContext";
 import { useResetHighlight } from "@/contexts/HighlightContext";
 import { useResetDataStructure } from "@/contexts/StepContext";
 import { useState } from "react";
-import { toast } from "@/hooks/use-toast";
 
 interface PromptInputAreaProps {
   setSubmittedText: (text: string) => void;

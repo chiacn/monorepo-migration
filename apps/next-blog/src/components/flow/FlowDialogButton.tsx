@@ -1,14 +1,15 @@
 "use client";
 import { useState } from "react";
 import DiagramContainer from "@/components/flow/DiagramContainer";
-import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
-import { Button } from "./ui/button";
 import {
+  Button,
+  Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "./ui/dialog";
+  DialogTrigger,
+} from "@monorepo/ui";
 import ContainerForDiagram from "./ContainerForDiagram";
 
 export default function FlowDiagramButton() {

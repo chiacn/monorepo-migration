@@ -6,7 +6,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
+} from "@monorepo/ui";
 import navlinks from "@/data/navlink";
 import Link from "next/link";
 import { useState } from "react";

@@ -1,7 +1,6 @@
 import { useState } from "react";
-import PromptButtonDialog from "../PromptButtonDialog";
-import { Button } from "../ui/button";
 import {
+  Button,
   Dialog,
   DialogContent,
   DialogDescription,
@@ -9,8 +8,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
-import { toast } from "@/hooks/use-toast";
+  PromptButtonDialog,
+  toast,
+} from "@monorepo/ui";
 import { useLLMActions } from "@/contexts/LLMContext";
 
 // interface PromptButtonProps {

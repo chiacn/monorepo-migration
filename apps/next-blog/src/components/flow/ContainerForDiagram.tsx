@@ -8,8 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
-import { Button } from "./ui/button";
+  Button,
+} from "@monorepo/ui";
 import DiagramContainerForText from "./DiagramContainerForText";
 import { text } from "node:stream/consumers";
 import structures from "../../diagrams/structures";

@@ -8,9 +8,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
-import { Button } from "./ui/button";
-import PromptButtonDialog from "./ui/PromptButtonDialog";
+  Button,
+  PromptButtonDialog,
+} from "@monorepo/ui";
 
 interface PromptButtonProps {
   getCopyPrompt: (input: string) => void;

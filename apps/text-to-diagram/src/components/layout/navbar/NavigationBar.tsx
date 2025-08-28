@@ -6,7 +6,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
+} from "@monorepo/ui";
 import navlinks from "@/data/navlink";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";

@@ -12,10 +12,12 @@ import PromptButton from "./PromptButton";
 
 import { Loader2 } from "lucide-react";
 
-import CommonToggleGroups from "./ui/CommonTogleGroup";
-import { Textarea } from "./ui/textarea";
-import CommonButton from "./ui/CommonButton";
-import { toast } from "@/hooks/use-toast";
+import {
+  CommonToggleGroups,
+  Textarea,
+  CommonButton,
+  toast,
+} from "@monorepo/ui";
 import { Structures } from "@/lib/types";
 
 export default function DiagramContainerForText({
