@@ -5,5 +5,9 @@
     "production": ["default"],
     "sharedGlobals": []
   },
-  "plugins": ["@nx/vite/plugin", "@nx/eslint/plugin"]
+  "plugins": [
+    "@nx/vite/plugin",
+    "@nx/eslint/plugin",
+    "@nx/next/plugin"
+  ]
 }
