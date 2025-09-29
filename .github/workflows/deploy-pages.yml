@@ -28,6 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        app: [next-blog, text-to-diagram]
         include:
           - app: next-blog
             isNext: true
@@ -42,7 +43,7 @@ jobs:
             workerUrlSecret: CF_WORKER_URL_TEXT_TO_DIAGRAM
             workerDir: apps/groq-proxy
 
-    if: ${{ inputs.app == '' || matrix.app == inputs.app }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.app == '' || matrix.app == inputs.app }}
     concurrency:
       group: pages-${{ matrix.app }}
       cancel-in-progress: false
@@ -85,7 +86,8 @@ jobs:
           --user $(id -u):$(id -g)
           -e CF_WORKER_URL='${{ secrets[matrix.workerUrlSecret] }}'
           -e CLOUDFLARE_API_TOKEN='${{ secrets.CLOUDFLARE_API_TOKEN }}'
-          -e CLOUDFLARE_ACCOUNT_ID='${{ secrets[CLOUDFLARE_ACCOUNT_ID] }}'
+          -e CLOUDFLARE_ACCOUNT_ID='${{ secrets.CLOUDFLARE_ACCOUNT_ID }}'
+
           -v "$GITHUB_WORKSPACE":/workspace
           -w /workspace
           ci-nx-wrangler
@@ -101,8 +103,8 @@ jobs:
           docker run --rm
           --user $(id -u):$(id -g)
           -e CF_WORKER_URL='${{ secrets[matrix.workerUrlSecret] }}'
-          -e CLOUDFLARE_API_TOKEN='${{ secrets[CLOUDFLARE_API_TOKEN] }}'
-          -e CLOUDFLARE_ACCOUNT_ID='${{ secrets[CLOUDFLARE_ACCOUNT_ID] }}'
+          -e CLOUDFLARE_API_TOKEN='${{ secrets.CLOUDFLARE_API_TOKEN }}'
+          -e CLOUDFLARE_ACCOUNT_ID='${{ secrets.CLOUDFLARE_ACCOUNT_ID }}'
           -v "$GITHUB_WORKSPACE":/workspace
           -w /workspace
           ci-nx-wrangler
