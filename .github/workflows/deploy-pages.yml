@@ -83,8 +83,11 @@ jobs:
       - name: Build (and export if Next) inside container
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.app == '' || matrix.app == github.event.inputs.app }}
         run: |
+          set -euo pipefail
           docker run --rm \
-          --user $(id -u):$(id -g) \
+          --user "$(id -u):$(id -g)" \
+          -e HOME=/workspace \
+          -e npm_config_cache=/workspace/.npm \
           -e CF_WORKER_URL='${{ secrets[matrix.workerUrlSecret] }}' \
           -e CLOUDFLARE_API_TOKEN='${{ secrets.CLOUDFLARE_API_TOKEN }}' \
           -e CLOUDFLARE_ACCOUNT_ID='${{ secrets.CLOUDFLARE_ACCOUNT_ID }}' \
@@ -92,6 +95,7 @@ jobs:
           -w /workspace \
           ci-nx-wrangler \
           bash -lc '
+            mkdir -p /workspace/.npm &&
             npm ci &&
             npx nx build "${{ matrix.app }}" &&
             if [ "${{ matrix.isNext }}" = "true" ]; then npx nx export "${{ matrix.app }}"; fi
@@ -101,8 +105,11 @@ jobs:
       - name: Verify Worker (inside container) or redeploy
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.app == '' || matrix.app == github.event.inputs.app }}
         run: |
+          set -euo pipefail
           docker run --rm \
-          --user $(id -u):$(id -g) \
+          --user "$(id -u):$(id -g)" \
+          -e HOME=/workspace \
+          -e npm_config_cache=/workspace/.npm \
           -e CF_WORKER_URL='${{ secrets[matrix.workerUrlSecret] }}' \
           -e CLOUDFLARE_API_TOKEN='${{ secrets.CLOUDFLARE_API_TOKEN }}' \
           -e CLOUDFLARE_ACCOUNT_ID='${{ secrets.CLOUDFLARE_ACCOUNT_ID }}' \
@@ -110,8 +117,9 @@ jobs:
           -w /workspace \
           ci-nx-wrangler \
           bash -lc '
+            mkdir -p /workspace/.npm &&
             node scripts/verify-worker.js ||
-            (cd "${{ matrix.workerDir }}" && npx -y wrangler@3 deploy --account-id "\$CLOUDFLARE_ACCOUNT_ID")
+            (cd "${{ matrix.workerDir }}" && npx -y wrangler@3 deploy --account-id "$CLOUDFLARE_ACCOUNT_ID")
           '
 
       # 호스트에서 gh-pages 퍼블리시
