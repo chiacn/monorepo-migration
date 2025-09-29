@@ -4,6 +4,7 @@ on:
   push:
     branches: ["main"]
     paths:
+      - ".github/workflows/**"
       - "apps/next-blog/**"
       - "apps/text-to-diagram/**"
       - "libs/**"
