@@ -43,7 +43,6 @@ jobs:
             workerUrlSecret: CF_WORKER_URL_TEXT_TO_DIAGRAM
             workerDir: apps/groq-proxy
 
-    if: ${{ github.event_name != 'workflow_dispatch' || inputs.app == '' || matrix.app == inputs.app }}
     concurrency:
       group: pages-${{ matrix.app }}
       cancel-in-progress: false
@@ -81,6 +80,7 @@ jobs:
 
       # 컨테이너에서 Nx 빌드
       - name: Build (and export if Next) inside container
+        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.app == '' || matrix.app == github.event.inputs.app }}
         run: >
           docker run --rm
           --user $(id -u):$(id -g)
@@ -99,6 +99,7 @@ jobs:
 
       # 헬스체크 -> 실패 시 wrangler 재배포
       - name: Verify Worker (inside container) or redeploy
+        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.app == '' || matrix.app == github.event.inputs.app }}
         run: >
           docker run --rm
           --user $(id -u):$(id -g)
@@ -115,6 +116,7 @@ jobs:
 
       # 호스트에서 gh-pages 퍼블리시
       - name: Deploy static to external repo (gh-pages)
+        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.app == '' || matrix.app == github.event.inputs.app }}
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.PAT_REPO }}
