@@ -1,0 +1,121 @@
+name: Deploy apps to GitHub Pages (monorepo -> external repos)
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "apps/next-blog/**"
+      - "apps/text-to-diagram/**"
+      - "libs/**"
+      - "package.json"
+      - "package-lock.json"
+      - "nx.json"
+      - "project.json"
+  workflow_dispatch:
+    inputs:
+      app:
+        description: "Select app to deploy (leave empty to deploy all)"
+        required: false
+        type: choice
+        options: ["", "next-blog", "text-to-diagram"]
+
+permissions:
+  contents: read
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - app: next-blog
+            isNext: true
+            publishDir: dist/apps/next-blog/export
+            externalRepo: chiacn/gh-pages-next-blog
+            workerUrlSecret: CF_WORKER_URL_NEXT_BLOG
+            workerDir: apps/groq-proxy
+          - app: text-to-diagram
+            isNext: false
+            publishDir: dist/apps/text-to-diagram
+            externalRepo: chiacn/gh-pages-text-diagram
+            workerUrlSecret: CF_WORKER_URL_TEXT_TO_DIAGRAM
+            workerDir: apps/groq-proxy
+
+    if: ${{ inputs.app == '' || matrix.app == inputs.app }}
+    concurrency:
+      group: pages-${{ matrix.app }}
+      cancel-in-progress: false
+
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # (선택) Nx/Next 캐시 복구
+      - name: Restore Nx/Next cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/.next/cache
+            node_modules/.cache/nx
+          key: ${{ runner.os }}-nx-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-nx-${{ hashFiles('package-lock.json') }}-
+
+      # Docker 레이어 캐시를 위한 buildx
+      - uses: docker/setup-buildx-action@v3
+
+      # 로컬 Dockerfile로 이미지 빌드(푸시 X, 캐시 O, 로컬에 로드 O)
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          tags: ci-nx-wrangler:latest
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # 컨테이너에서 Nx 빌드
+      - name: Build (and export if Next) inside container
+        run: >
+          docker run --rm
+          --user $(id -u):$(id -g)
+          -e CF_WORKER_URL='${{ secrets[matrix.workerUrlSecret] }}'
+          -e CLOUDFLARE_API_TOKEN='${{ secrets.CLOUDFLARE_API_TOKEN }}'
+          -e CLOUDFLARE_ACCOUNT_ID='${{ secrets[CLOUDFLARE_ACCOUNT_ID] }}'
+          -v "$GITHUB_WORKSPACE":/workspace
+          -w /workspace
+          ci-nx-wrangler
+          bash -lc "
+            npm ci &&
+            npx nx build '${{ matrix.app }}' &&
+            if [ '${{ matrix.isNext }}' = 'true' ]; then npx nx export '${{ matrix.app }}'; fi
+          "
+
+      # 헬스체크 -> 실패 시 wrangler 재배포
+      - name: Verify Worker (inside container) or redeploy
+        run: >
+          docker run --rm
+          --user $(id -u):$(id -g)
+          -e CF_WORKER_URL='${{ secrets[matrix.workerUrlSecret] }}'
+          -e CLOUDFLARE_API_TOKEN='${{ secrets[CLOUDFLARE_API_TOKEN] }}'
+          -e CLOUDFLARE_ACCOUNT_ID='${{ secrets[CLOUDFLARE_ACCOUNT_ID] }}'
+          -v "$GITHUB_WORKSPACE":/workspace
+          -w /workspace
+          ci-nx-wrangler
+          bash -lc "
+            node scripts/verify-worker.js ||
+            (cd '${{ matrix.workerDir }}' && npx -y wrangler@3 deploy --account-id '\$CLOUDFLARE_ACCOUNT_ID')
+          "
+
+      # 호스트에서 gh-pages 퍼블리시
+      - name: Deploy static to external repo (gh-pages)
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.PAT_REPO }}
+          external_repository: ${{ matrix.externalRepo }}
+          publish_branch: gh-pages
+          publish_dir: ${{ matrix.publishDir }}

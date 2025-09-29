@@ -1,0 +1,10 @@
+name = "groq-proxy"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# account_id는 toml에 "${...}"로 넣지 말고,
+# CI 환경변수(CLOUDFLARE_ACCOUNT_ID)로 제공하거나
+# wrangler CLI 플래그(--account-id)로 전달하세요.
+
+[vars]
+# 런타임 변수는 wrangler secret/vars로 주입 (예: GROQ_API_KEY)

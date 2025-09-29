@@ -2,7 +2,9 @@
   "name": "@monorepo-migration/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "verify:worker": "node scripts/verify-worker.js"
+  },
   "private": true,
   "dependencies": {
     "@langchain/community": "^0.3.17",

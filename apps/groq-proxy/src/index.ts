@@ -50,9 +50,19 @@ export default {
 		console.log('====================================================================');
 		// console.log('req ----------', req);
 		console.log('env ----------', env);
+		const url = new URL(req.url);
+
 		//  (선택) CORS origin 제한
 		const origin = req.headers.get('Origin') ?? '';
 		const method = req.method.toUpperCase();
+
+		// 헬스체크 엔드포인트 (Origin 없이도 허용, GET)
+		if (url.pathname === '/health' && method === 'GET') {
+			return new Response(JSON.stringify({ ok: true, ts: Date.now() }), {
+				headers: { 'content-type': 'application/json; charset=utf-8' },
+			});
+		}
+
 		// OPTIONS 요청 (CORS preflight)
 		if (method === 'OPTIONS') {
 			if (isAllowedOrigin(origin)) {
