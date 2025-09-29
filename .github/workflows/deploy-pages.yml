@@ -82,38 +82,37 @@ jobs:
       # 컨테이너에서 Nx 빌드
       - name: Build (and export if Next) inside container
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.app == '' || matrix.app == github.event.inputs.app }}
-        run: >
-          docker run --rm
-          --user $(id -u):$(id -g)
-          -e CF_WORKER_URL='${{ secrets[matrix.workerUrlSecret] }}'
-          -e CLOUDFLARE_API_TOKEN='${{ secrets.CLOUDFLARE_API_TOKEN }}'
-          -e CLOUDFLARE_ACCOUNT_ID='${{ secrets.CLOUDFLARE_ACCOUNT_ID }}'
-
-          -v "$GITHUB_WORKSPACE":/workspace
-          -w /workspace
-          ci-nx-wrangler
-          bash -lc "
+        run: |
+          docker run --rm \
+          --user $(id -u):$(id -g) \
+          -e CF_WORKER_URL='${{ secrets[matrix.workerUrlSecret] }}' \
+          -e CLOUDFLARE_API_TOKEN='${{ secrets.CLOUDFLARE_API_TOKEN }}' \
+          -e CLOUDFLARE_ACCOUNT_ID='${{ secrets.CLOUDFLARE_ACCOUNT_ID }}' \
+          -v "$GITHUB_WORKSPACE":/workspace \
+          -w /workspace \
+          ci-nx-wrangler \
+          bash -lc '
             npm ci &&
-            npx nx build '${{ matrix.app }}' &&
-            if [ '${{ matrix.isNext }}' = 'true' ]; then npx nx export '${{ matrix.app }}'; fi
-          "
+            npx nx build "${{ matrix.app }}" &&
+            if [ "${{ matrix.isNext }}" = "true" ]; then npx nx export "${{ matrix.app }}"; fi
+          '
 
       # 헬스체크 -> 실패 시 wrangler 재배포
       - name: Verify Worker (inside container) or redeploy
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.app == '' || matrix.app == github.event.inputs.app }}
-        run: >
-          docker run --rm
-          --user $(id -u):$(id -g)
-          -e CF_WORKER_URL='${{ secrets[matrix.workerUrlSecret] }}'
-          -e CLOUDFLARE_API_TOKEN='${{ secrets.CLOUDFLARE_API_TOKEN }}'
-          -e CLOUDFLARE_ACCOUNT_ID='${{ secrets.CLOUDFLARE_ACCOUNT_ID }}'
-          -v "$GITHUB_WORKSPACE":/workspace
-          -w /workspace
-          ci-nx-wrangler
-          bash -lc "
+        run: |
+          docker run --rm \
+          --user $(id -u):$(id -g) \
+          -e CF_WORKER_URL='${{ secrets[matrix.workerUrlSecret] }}' \
+          -e CLOUDFLARE_API_TOKEN='${{ secrets.CLOUDFLARE_API_TOKEN }}' \
+          -e CLOUDFLARE_ACCOUNT_ID='${{ secrets.CLOUDFLARE_ACCOUNT_ID }}' \
+          -v "$GITHUB_WORKSPACE":/workspace \
+          -w /workspace \
+          ci-nx-wrangler \
+          bash -lc '
             node scripts/verify-worker.js ||
-            (cd '${{ matrix.workerDir }}' && npx -y wrangler@3 deploy --account-id '\$CLOUDFLARE_ACCOUNT_ID')
-          "
+            (cd "${{ matrix.workerDir }}" && npx -y wrangler@3 deploy --account-id "\$CLOUDFLARE_ACCOUNT_ID")
+          '
 
       # 호스트에서 gh-pages 퍼블리시
       - name: Deploy static to external repo (gh-pages)
