@@ -49,10 +49,12 @@
       }
     },
     "export": {
-      "executor": "@nx/next:export",
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
       "outputs": ["{options.outputPath}"],
       "options": {
-        "buildTarget": "text-to-diagram:build:production",
+        "cwd": "apps/text-to-diagram",
+        "command": "next export -o dist/apps/text-to-diagram/export",
         "outputPath": "dist/apps/text-to-diagram/export"
       }
     },

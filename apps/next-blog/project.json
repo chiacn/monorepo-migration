@@ -49,10 +49,12 @@
       }
     },
     "export": {
-      "executor": "@nx/next:export",
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
       "outputs": ["{options.outputPath}"],
       "options": {
-        "buildTarget": "next-blog:build:production",
+        "cwd": "apps/next-blog",
+        "command": "next export -o dist/apps/next-blog/export",
         "outputPath": "dist/apps/next-blog/export"
       }
     },
