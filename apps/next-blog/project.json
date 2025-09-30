@@ -50,7 +50,7 @@
     },
     "export": {
       "executor": "@nx/next:export",
-      "outputs": ["dist/apps/next-blog/export"],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "buildTarget": "next-blog:build:production",
         "outputPath": "dist/apps/next-blog/export"

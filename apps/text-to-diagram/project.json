@@ -50,7 +50,7 @@
     },
     "export": {
       "executor": "@nx/next:export",
-      "outputs": ["dist/apps/text-to-diagram/export"],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "buildTarget": "text-to-diagram:build:production",
         "outputPath": "dist/apps/text-to-diagram/export"
