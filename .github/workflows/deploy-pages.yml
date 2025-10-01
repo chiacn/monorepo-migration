@@ -119,8 +119,7 @@ jobs:
             mkdir -p /workspace/.npm &&
             node scripts/verify-worker.js ||
             npx -y wrangler@3 deploy \
-            --config "${{ matrix.workerDir }}/wrangler.toml" \
-            --account-id "$CLOUDFLARE_ACCOUNT_ID"
+            --config "${{ matrix.workerDir }}/wrangler.toml"
           '
 
       # 호스트에서 gh-pages 퍼블리시
