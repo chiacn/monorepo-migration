@@ -35,13 +35,13 @@ jobs:
             isNext: true
             publishDir: dist/apps/next-blog/export
             externalRepo: chiacn/gh-pages-next-blog
-            workerUrlSecret: CF_WORKER_URL_NEXT_BLOG
+            workerUrlSecret: CF_WORKER_URL
             workerDir: apps/groq-proxy
           - app: text-to-diagram
             isNext: false
             publishDir: dist/apps/text-to-diagram
             externalRepo: chiacn/gh-pages-text-diagram
-            workerUrlSecret: CF_WORKER_URL_TEXT_TO_DIAGRAM
+            workerUrlSecret: CF_WORKER_URL
             workerDir: apps/groq-proxy
 
     concurrency:
