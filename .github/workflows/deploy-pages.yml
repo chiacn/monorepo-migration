@@ -97,8 +97,7 @@ jobs:
           bash -lc '
             mkdir -p /workspace/.npm &&
             npm ci &&
-            npx nx build "${{ matrix.app }}" &&
-            if [ "${{ matrix.isNext }}" = "true" ]; then npx nx export "${{ matrix.app }}"; fi
+            npx nx build "${{ matrix.app }}"
           '
 
       # 헬스체크 -> 실패 시 wrangler 재배포
