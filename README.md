@@ -1,95 +1,55 @@
-# MonorepoMigration
+# Monorepo Migration & CI/CD
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+## 프로젝트 개요
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+#### 1. 기존 개별 프로젝트인 [ next-blog ], [ text-to-diagram ] 프로젝트 nx 모노레포 프로젝트로 통합 (nx import)
 
-Run `npx nx graph` to visually explore what got created. Now, let's get you up to speed!
+- [next-blog](https://chiacn.github.io/gh-pages-next-blog/)
+- [text-to-diagram](https://chiacn.github.io/gh-pages-text-diagram/)
 
-## Run tasks
+#### 2. github action 기반 CI/CD 파이프라인 구축
 
-To run tasks with Nx use:
+---
 
-```sh
-npx nx <target> <project-name>
+### 1. 모노레포 프로젝트 통합
+
+#### 프로젝트 구성
+
+```
+/
+├── apps/
+│   ├── next-blog/  # <----- (gh-pages 배포)
+│   ├── groq-proxy/
+│   └── text-to-diagram/ # <-----(gh-pages 배포)
+├── libs/
+│   └── flow/
+│   ...
 ```
 
-For example:
+- **`apps/next-blog`**: Next.js 기반 개인 블로그
+- **`apps/groq-proxy`**: Cloudflare Worker를 활용하여 외부 Groq API 요청을 처리
+- **`apps/text-to-diagram`**: 입력된 텍스트를 LLM으로 분석 후 시각적인 다이어그램을 생성하는 프로젝트
 
-```sh
-npx nx build myproject
+---
+
+### 2. Github action 기반 CI/CD 파이프라인 구축
+
+#### 배포 흐름
+
+1. monorepo migration **main branch** [푸시] →
+2. [gh-pages-next-blog], [gh-pages-text-to-diagram] repository에 각각 자동 배포 (gh-pages)
+3. Test : cloudflare worker 헬스체크 → 오류 시 재배포
+
+---
+
+#### 파이프라인 구성 (workflow)
+
 ```
+1. Checkout → 소스 코드 가져오기
+2. Cache Restore → node_modules / Nx 캐시 복구
+3. Docker Build → 공통 실행 환경 이미지 빌드
+4. Nx Build & Export → Next.js 앱 빌드/정적화
+5. Worker Verify/Deploy → Cloudflare Worker 헬스체크 및 재배포 (정상 응답 없으면 wrangler로 자동 재배포)
+6. GitHub Pages Deploy → 빌드된 정적 사이트를 gh-pages 브랜치로 푸시
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-To install a new plugin you can use the `nx add` command. Here's an example of adding the React plugin:
-```sh
-npx nx add @nx/react
 ```
-
-Use the plugin's generator to create new projects. For example, to create a new React app or library:
-
-```sh
-# Generate an app
-npx nx g @nx/react:app demo
-
-# Generate a library
-npx nx g @nx/react:lib some-lib
-```
-
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
-
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
-```
-
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
