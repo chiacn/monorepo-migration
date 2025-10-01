@@ -4,7 +4,7 @@
 
 #### 1. 기존 개별 프로젝트인 [ next-blog ], [ text-to-diagram ] 프로젝트 nx 모노레포 프로젝트로 통합 (nx import)
 
-- [next-blog](https://chiacn.github.io/gh-pages-next-blog/)
+- [next-blog](https://chiacn.github.io/gh-pages-next-blog/articles)
 - [text-to-diagram](https://chiacn.github.io/gh-pages-text-diagram/)
 
 #### 2. github action 기반 CI/CD 파이프라인 구축
