@@ -51,11 +51,10 @@
     "export": {
       "executor": "nx:run-commands",
       "dependsOn": ["build"],
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{workspaceRoot}/dist/apps/next-blog/export"],
       "options": {
         "cwd": "apps/next-blog",
-        "command": "next export -o dist/apps/next-blog/export",
-        "outputPath": "dist/apps/next-blog/export"
+        "command": "next export -o dist/apps/next-blog/export"
       }
     },
     "lint": {

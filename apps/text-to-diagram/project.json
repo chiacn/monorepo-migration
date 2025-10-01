@@ -51,11 +51,10 @@
     "export": {
       "executor": "nx:run-commands",
       "dependsOn": ["build"],
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{workspaceRoot}/dist/apps/text-to-diagram/export"],
       "options": {
         "cwd": "apps/text-to-diagram",
-        "command": "next export -o dist/apps/text-to-diagram/export",
-        "outputPath": "dist/apps/text-to-diagram/export"
+        "command": "next export -o dist/apps/text-to-diagram/export"
       }
     },
     "lint": {
