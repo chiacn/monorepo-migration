@@ -33,13 +33,13 @@ jobs:
         include:
           - app: next-blog
             isNext: true
-            publishDir: dist/apps/next-blog/export
+            publishDir: dist/apps/next-blog/out
             externalRepo: chiacn/gh-pages-next-blog
             workerUrlSecret: CF_WORKER_URL
             workerDir: apps/groq-proxy
           - app: text-to-diagram
             isNext: false
-            publishDir: dist/apps/text-to-diagram
+            publishDir: dist/apps/text-to-diagram/out
             externalRepo: chiacn/gh-pages-text-diagram
             workerUrlSecret: CF_WORKER_URL
             workerDir: apps/groq-proxy
