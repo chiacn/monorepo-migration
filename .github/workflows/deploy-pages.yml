@@ -131,3 +131,4 @@ jobs:
           external_repository: ${{ matrix.externalRepo }}
           publish_branch: gh-pages
           publish_dir: ${{ matrix.publishDir }}
+          allow_empty_commit: true # 변화 없어도 커밋 생성
