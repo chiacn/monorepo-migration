@@ -33,13 +33,13 @@ jobs:
         include:
           - app: next-blog
             isNext: true
-            publishDir: dist/apps/next-blog/export
+            publishDir: dist/apps/next-blog/out
             externalRepo: chiacn/gh-pages-next-blog
             workerUrlSecret: CF_WORKER_URL
             workerDir: apps/groq-proxy
           - app: text-to-diagram
             isNext: false
-            publishDir: dist/apps/text-to-diagram/export
+            publishDir: dist/apps/text-to-diagram/out
             externalRepo: chiacn/gh-pages-text-diagram
             workerUrlSecret: CF_WORKER_URL
             workerDir: apps/groq-proxy
@@ -133,9 +133,23 @@ jobs:
           publish_dir: ${{ matrix.publishDir }}
           allow_empty_commit: true # 변화 없어도 커밋
 
-      - name: Debug out dirs
+      - name: Inspect publish_dir (what will be published)
         run: |
-          echo "=== next-blog ==="
-          find apps/next-blog/out -maxdepth 2 -name index.html -print || true
-          echo "=== text-to-diagram ==="
-          find apps/text-to-diagram/out -maxdepth 2 -name index.html -print || true
+          P="${{ matrix.publishDir }}"
+          echo "PUBLISH_DIR=$P"
+
+          if [ ! -d "$P" ]; then
+            echo "::error:: publish_dir not found: $P"
+            exit 1
+          fi
+
+          echo "[index.html in $P]"
+          find "$P" -maxdepth 2 -name index.html -print || true
+
+          echo "[Head of tree under $P]"
+          find "$P" -type f -printf '%P\n' | head -n 50
+
+          echo "Total files in publish_dir: $(find "$P" -type f | wc -l)"
+          if [ "$(find "$P" -type f | wc -l)" -eq 0 ]; then
+            echo "::warning:: publish_dir is empty; nothing to commit."
+          fi
